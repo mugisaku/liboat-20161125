@@ -289,7 +289,7 @@ construct_widgets()
   cv->style.border_width = 2;
   cv->style.border_color = const_color::blue;
 
-  cv->set_callback(put);
+  cv->set_left_callback(put);
 
   cv->clear();
 

@@ -47,6 +47,14 @@ callback(nullptr)
 
 
 
+const ButtonModule*
+Button::
+operator->() const
+{
+  return &module;
+}
+
+
 ButtonModule&
 Button::
 get_module()

@@ -16,9 +16,9 @@ draw_dot()
 {
   auto&  dst = get_index(tool_point.x,tool_point.y);
 
-    if(callback)
+    if(l_callback)
     {
-      callback(*this);
+      l_callback(*this);
     }
 
 
@@ -191,9 +191,9 @@ draw(const Mouse&  mouse)
         else
           if(mouse.left.test_unpressed())
           {
-              if(callback)
+              if(l_callback)
               {
-                callback(*this);
+                l_callback(*this);
               }
 
 
@@ -211,9 +211,9 @@ draw(const Mouse&  mouse)
         else
           if(mouse.left.test_unpressed())
           {
-              if(callback)
+              if(l_callback)
               {
-                callback(*this);
+                l_callback(*this);
               }
 
 
@@ -231,9 +231,9 @@ draw(const Mouse&  mouse)
         else
           if(mouse.left.test_unpressed())
           {
-              if(callback)
+              if(l_callback)
               {
-                callback(*this);
+                l_callback(*this);
               }
 
 
@@ -251,9 +251,9 @@ draw(const Mouse&  mouse)
         else
           if(mouse.left.test_unpressed())
           {
-              if(callback)
+              if(l_callback)
               {
-                callback(*this);
+                l_callback(*this);
               }
 
 
@@ -265,9 +265,9 @@ draw(const Mouse&  mouse)
           {
             fill_area();
 
-              if(callback)
+              if(l_callback)
               {
-                callback(*this);
+                l_callback(*this);
               }
 
 

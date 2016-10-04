@@ -9,7 +9,8 @@ namespace oat{
 
 Canvas::
 Canvas():
-callback(nullptr),
+l_callback(nullptr),
+r_callback(nullptr),
 type(PaintType::draw_dot),
 color_index(1<<9),
 eraser_flag(0),
@@ -21,7 +22,8 @@ grid_flag(0)
 Canvas::
 Canvas(IndexColorImageModule&&  m, int  pixel_size_, int  view_w, int  view_h):
 IndexColorImage(std::move(m),pixel_size_,view_w,view_h),
-callback(nullptr),
+l_callback(nullptr),
+r_callback(nullptr),
 type(PaintType::draw_dot),
 color_index(1<<9),
 eraser_flag(0),
@@ -34,9 +36,17 @@ grid_flag(0)
 
 void
 Canvas::
-set_callback(Callback  cb)
+set_left_callback(Callback  cb)
 {
-  callback = cb;
+  l_callback = cb;
+}
+
+
+void
+Canvas::
+set_right_callback(Callback  cb)
+{
+  r_callback = cb;
 }
 
 

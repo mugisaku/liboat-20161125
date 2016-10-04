@@ -39,7 +39,8 @@ private:
   DotStack  provisional_dots;
   DotStack       backup_dots;
 
-  Callback  callback;
+  Callback  l_callback;
+  Callback  r_callback;
 
   Point  tool_point;
 
@@ -81,7 +82,8 @@ public:
 
   void  change_paint_type(PaintType  t);
 
-  void  set_callback(Callback  cb);
+  void  set_left_callback(Callback  cb);
+  void  set_right_callback(Callback  cb);
 
   void  change_eraser_flag(bool  v);
   void    change_grid_flag(bool  v);

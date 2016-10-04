@@ -34,6 +34,8 @@ public:
         ButtonModule&  get_module()            ;
   const ButtonModule&  get_const_module() const;
 
+  const ButtonModule*  operator->() const;
+
   void  change_icon(Icon*  icon);
   void  change_text(Text*  text);
 
