@@ -3,6 +3,7 @@
 
 
 #include<cstdint>
+#include<cstdio>
 #include<string>
 
 
@@ -25,7 +26,7 @@ Character
   static Character*  pointer_table[0x10000];
 
   static void  reset_table();
-  static void  print_table();
+  static void  print_table(FILE*  f=stdout);
 
 };
 
@@ -46,19 +47,7 @@ Combined
   static Combined*  pointer_table[0x10000];
 
   static void  reset_table();
-  static void  print_table();
-
-};
-
-
-struct
-TallCharacter
-{
-  static constexpr int  height = 16;
-
-  char16_t  unicode;
-
-  uint8_t  data[height];
+  static void  print_table(FILE*  f=stdout);
 
 };
 

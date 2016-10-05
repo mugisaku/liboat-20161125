@@ -1,5 +1,4 @@
 #include"fcfont.hpp"
-#include<cstdio>
 
 
 
@@ -47,21 +46,21 @@ reset_table()
 
 void
 Character::
-print_table()
+print_table(FILE*  f)
 {
-  printf("//characters\n");
+  fprintf(f,"//characters\n");
 
     for(auto&  c: table)
     {
-      printf("{0x%04X,{",c.unicode);
+      fprintf(f,"{0x%04X,{",c.unicode);
 
         for(int  i = 0;  i < size;  ++i)
         {
-          printf("0x%02X,",c.data[i]);
+          fprintf(f,"0x%02X,",c.data[i]);
         }
 
 
-      printf("}},\n");
+      fprintf(f,"}},\n");
     }
 }
 
@@ -105,38 +104,13 @@ reset_table()
 
 void
 Combined::
-print_table()
+print_table(FILE*  f)
 {
-  printf("//combineds\n");
+  fprintf(f,"//combineds\n");
 
     for(auto&  c: combined_table)
     {
-      printf("{0x%04X,0x%04X,0x%04X},\n",c.unicode,c.upper,c.lower);
-    }
-
-
-  printf("//talls\n");
-
-    for(auto&  c: combined_table)
-    {
-      printf("{0x%04X,{",c.unicode);
-
-      auto&  upper = Character::pointer_table[c.upper];
-      auto&  lower = Character::pointer_table[c.lower];
-
-        for(auto  v: upper->data)
-        {
-          printf("0x%02X,",v);
-        }
-
-
-        for(auto  v: lower->data)
-        {
-          printf("0x%02X,",v);
-        }
-
-
-      printf("}},\n");
+      fprintf(f,"{0x%04X,0x%04X,0x%04X},\n",c.unicode,c.upper,c.lower);
     }
 }
 

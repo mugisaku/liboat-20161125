@@ -68,8 +68,23 @@ save(Button&  btn)
 {
     if(btn.get_module().test_unpressed())
     {
-      Character::print_table();
-       Combined::print_table();
+      static int  n;
+
+      char  buf[256];
+
+      snprintf(buf,sizeof(buf),"__FCFONT_%03d.txt",n++);
+
+      auto  f = fopen(buf,"wb");
+
+        if(f)
+        {
+          Character::print_table(f);
+          Character::print_table();
+           Combined::print_table(f);
+           Combined::print_table();
+
+          fclose(f);
+        }
     }
 }
 }
