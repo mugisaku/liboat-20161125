@@ -49,7 +49,10 @@ public:
   void  down();
 
   void  process_mouse(const Mouse&  mouse) override;
+
   void  render() override;
+
+  static void  draw_combined(const Combined&  cmb, Widget*  wid, int  x, int  y);
 
 };
 

@@ -15,6 +15,7 @@ namespace fcfont{
 struct CharacterSelector;
 struct CharacterEditor;
 struct CombinedSelector;
+struct Sample;
 
 
 class
@@ -24,6 +25,8 @@ Editor: public Widget
   CharacterEditor*      chr_editor;
 
   CombinedSelector*  cmb_selector;
+
+  Sample*  sample;
 
   Text*  chr_cp_text;
   Text*  cmb_cp_text;

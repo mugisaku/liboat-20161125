@@ -1,4 +1,5 @@
 #include"fcfont_editor.hpp"
+#include"fcfont_sample.hpp"
 #include"fcfont_charactereditor.hpp"
 #include"fcfont_characterselector.hpp"
 #include"fcfont_combinedselector.hpp"
@@ -109,6 +110,8 @@ cmb_update(void*  ptr)
   auto&  ed = *static_cast<Editor*>(ptr);
 
   ed.cmb_cp_text->change_string(ed.cmb_selector->get_buffer());
+
+  ed.sample->change(ed.cmb_selector->get()->unicode);
 }
 
 
@@ -204,12 +207,15 @@ Editor()
   chr_editor = new CharacterEditor(*chr_selector,*cmb_selector);
 
 
+  sample = new Sample;
+
+
   auto  a_tbl = new TableColumn({chr_editor,chr_cp_text});
   auto  b_tbl = new TableColumn({new Text(u"基本文字"),chr_selector,chr_row});
   auto  c_tbl = new TableColumn({new TableColumn({upper_button,lower_button}),cmb_cp_text});
   auto  d_tbl = new TableColumn({new Text(u"合体文字"),cmb_selector,cmb_row});
 
-  join(new TableColumn({new TableRow({a_tbl,b_tbl,c_tbl,d_tbl}),save_button}),0,0);
+  join(new TableColumn({new TableRow({a_tbl,b_tbl,c_tbl,d_tbl}),new TableRow({sample,save_button})}),0,0);
 }
 
 

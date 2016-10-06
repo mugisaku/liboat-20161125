@@ -58,6 +58,7 @@ endif
 
 OBJ =                         \
   fcfont.o                    \
+  fcfont_sample.o             \
   fcfont_characterselector.o  \
   fcfont_charactereditor.o    \
   fcfont_combinedselector.o   \

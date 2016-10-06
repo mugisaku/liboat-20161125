@@ -107,6 +107,15 @@ process_mouse(const Mouse&  mouse)
 
 void
 CombinedSelector::
+draw_combined(const Combined&  cmb, Widget*  wid, int  x, int  y)
+{
+  CharacterSelector::draw_character(*Character::pointer_table[cmb.upper],wid,x,y                );
+  CharacterSelector::draw_character(*Character::pointer_table[cmb.lower],wid,x,y+Character::size);
+}
+
+
+void
+CombinedSelector::
 render()
 {
   auto  pt = content.point;
@@ -134,8 +143,7 @@ render()
         }
 
 
-      CharacterSelector::draw_character(*Character::pointer_table[c.upper],this,x_base,y_base                );
-      CharacterSelector::draw_character(*Character::pointer_table[c.lower],this,x_base,y_base+Character::size);
+      draw_combined(c,this,x_base,y_base);
     }}
 
 
