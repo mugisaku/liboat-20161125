@@ -12,7 +12,7 @@ CombinedSelector::
 CombinedSelector(Callback  cb):
 callback(cb),
 now(Combined::embedded_table),
-buffer(u"U+XXXX"),
+buffer(u"? U+XXXX"),
 offset(0)
 {
   style.background_color = const_color::black;
@@ -83,10 +83,11 @@ process_mouse(const Mouse&  mouse)
         {
           now = &Combined::embedded_table[i];
 
+          buffer[0] = now->unicode;
 
           static const char16_t  c_table[] = u"0123456789ABCDEF";
 
-          auto  p = &buffer[2];
+          auto  p = &buffer[4];
 
           *p++ = c_table[(now->unicode>>12)&0xF];
           *p++ = c_table[(now->unicode>> 8)&0xF];
@@ -109,8 +110,12 @@ void
 CombinedSelector::
 draw_combined(const Combined&  cmb, Widget*  wid, int  x, int  y)
 {
-  CharacterSelector::draw_character(*Character::pointer_table[cmb.upper],wid,x,y                );
-  CharacterSelector::draw_character(*Character::pointer_table[cmb.lower],wid,x,y+Character::size);
+  auto  upper = Character::pointer_table[cmb.upper];
+  auto  lower = Character::pointer_table[cmb.lower];
+
+
+    if(upper){CharacterSelector::draw_character(*upper,wid,x,y                );}
+    if(lower){CharacterSelector::draw_character(*lower,wid,x,y+Character::size);}
 }
 
 

@@ -154,8 +154,8 @@ change_lower(Button&  btn)
 Editor::
 Editor()
 {
-  chr_cp_text = new Text(u"U+0000");
-  cmb_cp_text = new Text(u"U+0000");
+  chr_cp_text = new Text(u"? U+XXXX");
+  cmb_cp_text = new Text(u"? U+XXXX");
 
     chr_up_button = new Button(new Icon({&const_icon::up}));
   chr_down_button = new Button(new Icon({&const_icon::down}));

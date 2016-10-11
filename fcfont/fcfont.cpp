@@ -9,6 +9,49 @@ namespace fcfont{
 
 
 namespace{
+
+
+constexpr bool
+is_private_use_area(char16_t  c)
+{
+  return((c >= 0xE000) &&
+         (c <= 0xF8FF));
+}
+
+
+void
+encode(char16_t  c, char*  buf)
+{
+    if(c <= 0x7F)
+    {
+      buf[0] = c;
+
+      buf[1] = 0;
+    }
+
+  else
+    if((c >= 0x0080) &&
+       (c <= 0x07FF))
+    {
+      buf[0] = (0b11000000|(c>>6));
+      buf[1] = (0b10000000|(c&0b111111));
+
+      buf[2] = 0;
+    }
+
+  else
+    if((c >= 0x0800) &&
+       (c <= 0xFFFF))
+    {
+      buf[0] = (0b11100000|(c>>12));
+      buf[1] = (0b10000000|((c>>6)&0b111111));
+      buf[2] = (0b10000000|((c   )&0b111111));
+
+      buf[3] = 0;
+    }
+}
+
+
 Character
 table[] =
 {
@@ -50,9 +93,30 @@ print_table(FILE*  f)
 {
   fprintf(f,"//characters\n");
 
-    for(auto&  c: table)
+    for(auto  ptr: pointer_table)
     {
-      fprintf(f,"{0x%04X,{",c.unicode);
+        if(!ptr)
+        {
+          continue;
+        }
+
+
+      auto&  c = *ptr;
+
+        if(is_private_use_area(c.unicode))
+        {
+          fprintf(f,"{0x%04X,{",c.unicode);
+        }
+
+      else
+        {
+          char  buf[4];
+
+          encode(c.unicode,buf);
+
+          fprintf(f,"{u\'%s\',{",buf);
+        }
+
 
         for(int  i = 0;  i < size;  ++i)
         {
@@ -108,9 +172,32 @@ print_table(FILE*  f)
 {
   fprintf(f,"//combineds\n");
 
-    for(auto&  c: combined_table)
+    for(auto  ptr: pointer_table)
     {
-      fprintf(f,"{0x%04X,0x%04X,0x%04X},\n",c.unicode,c.upper,c.lower);
+        if(!ptr)
+        {
+          continue;
+        }
+
+
+      auto&  c = *ptr;
+
+        if(is_private_use_area(c.unicode))
+        {
+          fprintf(f,"{0x%04X,",c.unicode);
+        }
+
+      else
+        {
+          char  buf[4];
+
+          encode(c.unicode,buf);
+
+          fprintf(f,"{u\'%s\',",buf);
+        }
+
+
+      fprintf(f,"0x%04X,0x%04X},\n",c.upper,c.lower);
     }
 }
 

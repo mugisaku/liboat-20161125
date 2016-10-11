@@ -12,7 +12,7 @@ CharacterSelector::
 CharacterSelector(Callback  cb):
 callback(cb),
 now(Character::embedded_table),
-buffer(u"U+XXXX"),
+buffer(u"X U+XXXX"),
 offset(0)
 {
   style.background_color = const_color::black;
@@ -84,9 +84,11 @@ process_mouse(const Mouse&  mouse)
           now = &Character::embedded_table[i];
 
 
+          buffer[0] = now->unicode;
+
           static const char16_t  c_table[] = u"0123456789ABCDEF";
 
-          auto  p = &buffer[2];
+          auto  p = &buffer[4];
 
           *p++ = c_table[(now->unicode>>12)&0xF];
           *p++ = c_table[(now->unicode>> 8)&0xF];
