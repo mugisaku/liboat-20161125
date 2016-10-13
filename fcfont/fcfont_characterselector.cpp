@@ -120,13 +120,9 @@ draw_character(const Character&  c, Widget*  wid, int  x_base, int  y_base)
 
         for(int  xx = 0;  xx < 8;  ++xx)
         {
-            if(code&0x80)
-            {
-              wid->draw_dot(const_color::white,x_base+xx,y_base+yy);
-            }
+          wid->draw_dot(Character::color_table[code>>14],x_base+xx,y_base+yy);
 
-
-          code <<= 1;
+          code <<= 2;
         }
     }
 }

@@ -181,6 +181,13 @@ main(int  argc,  char**  argv)
 
   screen.create("EDitor for FONT - " __DATE__,m.get_width(),m.get_height());
 
+  fcfont::Character::color_table[0] = screen.map_rgb(0x00,0x00,0x00);
+  fcfont::Character::color_table[1] = screen.map_rgb(0xFF,0xFF,0xFF);
+  fcfont::Character::color_table[2] = screen.map_rgb(0x3F,0x3F,0x3F);
+  fcfont::Character::color_table[3] = screen.map_rgb(0x7F,0x7F,0x7F);
+
+  oat::master.set_flag(Widget::Flag::needed_to_redraw_perfect);
+
   update_screen();
 
 #ifdef EMSCRIPTEN

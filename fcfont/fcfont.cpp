@@ -75,6 +75,9 @@ Character::
 pointer_table[0x10000];
 
 
+uint32_t
+Character::
+color_table[4];
 
 void
 Character::
@@ -120,7 +123,7 @@ print_table(FILE*  f)
 
         for(int  i = 0;  i < size;  ++i)
         {
-          fprintf(f,"0x%02X,",c.data[i]);
+          fprintf(f,"0x%04X,",c.data[i]);
         }
 
 

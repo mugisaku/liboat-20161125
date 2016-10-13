@@ -34,7 +34,7 @@ process_mouse(const Mouse&  mouse)
 
   auto&  target = chrsel.get()->data[cursor.y];
 
-  auto  flag = (0x80>>cursor.x);
+  auto  flag = (0x4000>>(cursor.x<<1));
 
     if(mouse.left.test_pressing())
     {
@@ -74,13 +74,9 @@ render()
 
         for(int  x = 0;  x < Character::size;  ++x)
         {
-            if(code&0x80)
-            {
-              fill_rect(const_color::white,pt.x+(pixel_size*x),pt.y+(pixel_size*y),pixel_size,pixel_size);
-            }
+          fill_rect(Character::color_table[code>>14],pt.x+(pixel_size*x),pt.y+(pixel_size*y),pixel_size,pixel_size);
 
-
-          code <<= 1;
+          code <<= 2;
         }
     }
 }

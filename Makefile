@@ -91,14 +91,13 @@ OAT_OBJ +=                 \
 .PHONY: all clean FORCE
 
 
-all: $(LIBOAT) aicone$(EXE_EXT) correct$(EXE_EXT) edfont$(EXE_EXT) fcfont2bmp$(EXE_EXT)
+all: $(LIBOAT) aicone$(EXE_EXT) correct$(EXE_EXT) edfont$(EXE_EXT)
 
 clean:
 	rm -f $(OAT_OBJ) $(LIBOAT)
 	rm -f aicone$(EXE_EXT)
 	rm -f correct$(EXE_EXT)
 	rm -f edfont$(EXE_EXT)
-	rm -f fcfont2bmp$(EXE_EXT)
 	make -C fcfont clean
 
 
@@ -122,9 +121,6 @@ correct$(EXE_EXT): correct.cpp space.cpp $(OAT_OBJ)
 
 edfont$(EXE_EXT): edfont.cpp FCFONT $(OAT_OBJ)
 	$(CXX) edfont.cpp $(OAT_OBJ) fcfont/*.o $(CXXFLAGS) $(LDFLAGS)  -Os -o $@
-
-fcfont2bmp$(EXE_EXT): fcfont2bmp.cpp fcfont/fcfont.cpp fcfont/characters.txt fcfont/combineds.txt
-	$(CXX) -o $@ fcfont2bmp.cpp fcfont/fcfont.cpp -I./fcfont -I/usr/include/SDL2 $(CXXFLAGS) -lSDL2
 
 
 

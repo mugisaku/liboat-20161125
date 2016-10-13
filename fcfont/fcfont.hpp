@@ -17,7 +17,7 @@ Character
 
   char16_t  unicode;
 
-  uint8_t  data[size];
+  uint16_t  data[size];
 
   static Character*  embedded_table;
 
@@ -27,6 +27,8 @@ Character
 
   static void  reset_table();
   static void  print_table(FILE*  f=stdout);
+
+  static uint32_t  color_table[4];
 
 };
 
