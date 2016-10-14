@@ -14,6 +14,7 @@ namespace fcfont{
 
 struct CharacterSelector;
 struct CombinedSelector;
+struct ColorSelector;
 
 
 class
@@ -25,9 +26,10 @@ CharacterEditor: public Widget
 
   CharacterSelector&  chrsel;
   CombinedSelector&   cmbsel;
+  ColorSelector&      colsel;
 
 public:
-  CharacterEditor(CharacterSelector&  chrsel_, CombinedSelector&  cmbsel_);
+  CharacterEditor(CharacterSelector&  chrsel_, CombinedSelector&  cmbsel_, ColorSelector&  colsel_);
 
   void  process_mouse(const Mouse&  mouse) override;
   void  render() override;

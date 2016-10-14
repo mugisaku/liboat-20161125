@@ -2,6 +2,7 @@
 #include"fcfont_sample.hpp"
 #include"fcfont_charactereditor.hpp"
 #include"fcfont_characterselector.hpp"
+#include"fcfont_colorselector.hpp"
 #include"fcfont_combinedselector.hpp"
 
 
@@ -204,13 +205,16 @@ Editor()
   cmb_selector->set_userdata(this);
 
 
-  chr_editor = new CharacterEditor(*chr_selector,*cmb_selector);
+  col_selector = new ColorSelector();
+
+
+  chr_editor = new CharacterEditor(*chr_selector,*cmb_selector,*col_selector);
 
 
   sample = new Sample;
 
 
-  auto  a_tbl = new TableColumn({chr_editor,chr_cp_text});
+  auto  a_tbl = new TableColumn({chr_editor,chr_cp_text,col_selector});
   auto  b_tbl = new TableColumn({new Text(u"基本文字"),chr_selector,chr_row});
   auto  c_tbl = new TableColumn({new TableColumn({upper_button,lower_button}),cmb_cp_text});
   auto  d_tbl = new TableColumn({new Text(u"合体文字"),cmb_selector,cmb_row});

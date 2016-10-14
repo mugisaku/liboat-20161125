@@ -75,7 +75,7 @@ Character::
 pointer_table[0x10000];
 
 
-uint32_t
+oat::Color
 Character::
 color_table[4];
 

@@ -12,6 +12,7 @@ using namespace oat;
 namespace fcfont{
 
 
+struct ColorSelector;
 struct CharacterSelector;
 struct CharacterEditor;
 struct CombinedSelector;
@@ -25,6 +26,7 @@ Editor: public Widget
   CharacterEditor*      chr_editor;
 
   CombinedSelector*  cmb_selector;
+  ColorSelector*  col_selector;
 
   Sample*  sample;
 
