@@ -85,7 +85,12 @@ reset_table()
 {
     for(auto&  c: table)
     {
-      pointer_table[c.unicode] = &c;
+      auto&  ptr = pointer_table[c.unicode];
+
+        if(!ptr)
+        {
+          pointer_table[c.unicode] = &c;
+        }
     }
 }
 
@@ -164,7 +169,12 @@ reset_table()
 {
     for(auto&  c: combined_table)
     {
-      pointer_table[c.unicode] = &c;
+      auto&  ptr = pointer_table[c.unicode];
+
+        if(!ptr)
+        {
+          ptr = &c;
+        }
     }
 }
 
@@ -201,6 +211,35 @@ print_table(FILE*  f)
 
 
       fprintf(f,"0x%04X,0x%04X},\n",c.upper,c.lower);
+    }
+
+
+    for(auto&  c: table)
+    {
+      auto  ptr = pointer_table[c.unicode];
+
+        if(ptr)
+        {
+          continue;
+        }
+
+
+        if(is_private_use_area(c.unicode))
+        {
+          fprintf(f,"{0x%04X,",c.unicode);
+        }
+
+      else
+        {
+          char  buf[4];
+
+          encode(c.unicode,buf);
+
+          fprintf(f,"{u\'%s\',",buf);
+        }
+
+
+      fprintf(f,"0x%04X,0x%04X},\n",u' ',c.unicode);
     }
 }
 
