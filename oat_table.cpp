@@ -19,10 +19,28 @@ append(std::initializer_list<Widget*>  ls)
 }
 
 
+void
+TableElement::
+append(std::vector<Widget*>  ls)
+{
+    for(auto  child: ls)
+    {
+      append(child);
+    }
+}
+
+
 
 
 TableRow::
 TableRow(std::initializer_list<Widget*>  children)
+{
+  TableElement::append(children);
+}
+
+
+TableRow::
+TableRow(std::vector<Widget*>  children)
 {
   TableElement::append(children);
 }
@@ -47,6 +65,13 @@ append(Widget*  child)
 
 TableColumn::
 TableColumn(std::initializer_list<Widget*>  children)
+{
+  TableElement::append(children);
+}
+
+
+TableColumn::
+TableColumn(std::vector<Widget*>  children)
 {
   TableElement::append(children);
 }

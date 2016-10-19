@@ -44,12 +44,15 @@ void
 CharacterSelector::
 up()
 {
-    if(offset)
-    {
-      offset -= x_element_number;
+  offset -= x_element_number*y_element_number;
 
-      need_to_redraw();
+    if(offset < 0)
+    {
+      offset = 0;
     }
+
+
+  need_to_redraw();
 }
 
 
@@ -57,7 +60,7 @@ void
 CharacterSelector::
 down()
 {
-  offset += x_element_number;
+  offset += x_element_number*y_element_number;
 
   need_to_redraw();
 }

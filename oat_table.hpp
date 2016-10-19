@@ -19,6 +19,7 @@ protected:
 
 public:
   void  append(std::initializer_list<Widget*>  ls);
+  void  append(std::vector<Widget*>  ls);
 
 };
 
@@ -28,6 +29,7 @@ TableRow: public TableElement
 {
 public:
   TableRow(std::initializer_list<Widget*>  children={});
+  TableRow(std::vector<Widget*>  children);
 
   void  append(Widget*  child) override;
 
@@ -39,6 +41,7 @@ TableColumn: public TableElement
 {
 public:
   TableColumn(std::initializer_list<Widget*>  children={});
+  TableColumn(std::vector<Widget*>  children);
 
   void  append(Widget*  child) override;
 

@@ -39,6 +39,9 @@ public:
   void  change_icon(Icon*  icon);
   void  change_text(Text*  text);
 
+  void    press();
+  void  unpress();
+
   void  set_callback(Callback  cb, bool  repeat=false);
 
   void  process_mouse(const Mouse&  mouse) override;

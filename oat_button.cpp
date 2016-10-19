@@ -145,23 +145,44 @@ set_callback(Callback  cb, bool  repeat)
 
 void
 Button::
+press()
+{
+  module.press();
+
+    if(callback)
+    {
+      callback(*this);
+    }
+
+
+  need_to_redraw();
+}
+
+
+void
+Button::
+unpress()
+{
+  module.unpress();
+
+    if(callback)
+    {
+      callback(*this);
+    }
+
+
+  need_to_redraw();
+}
+
+
+void
+Button::
 process_mouse(const Mouse&  mouse)
 {
   bool  flag = false;
 
-       if(mouse.left.test_pressed()  ){    module.press();  flag = true;}
-  else if(mouse.left.test_unpressed()){  module.unpress();  flag = true;}
-
-    if(flag)
-    {
-        if(callback)
-        {
-          callback(*this);
-        }
-
-
-      need_to_redraw();
-    }
+       if(mouse.left.test_pressed()  ){  press();}
+  else if(mouse.left.test_unpressed()){unpress();}
 }
 
 

@@ -91,14 +91,16 @@ OAT_OBJ +=                 \
 .PHONY: all clean FORCE
 
 
-all: $(LIBOAT) aicone$(EXE_EXT) correct$(EXE_EXT) edfont$(EXE_EXT)
+all: $(LIBOAT) aicone$(EXE_EXT) correct$(EXE_EXT) edfont$(EXE_EXT) edsnd$(EXE_EXT)
 
 clean:
 	rm -f $(OAT_OBJ) $(LIBOAT)
 	rm -f aicone$(EXE_EXT)
 	rm -f correct$(EXE_EXT)
 	rm -f edfont$(EXE_EXT)
+	rm -f edsnd$(EXE_EXT)
 	make -C fcfont clean
+	make -C pwg clean
 
 
 objects: $(OAT_OBJ)
@@ -114,13 +116,16 @@ endif
 
 
 aicone$(EXE_EXT): aicone.cpp $(OAT_OBJ)
-	$(CXX) $^ $(CXXFLAGS) $(LDFLAGS)  -Os -o $@
+	$(CXX) $^ $(CXXFLAGS) $(LDFLAGS)  -o $@
 
 correct$(EXE_EXT): correct.cpp space.cpp $(OAT_OBJ)
-	$(CXX) $^ $(CXXFLAGS) $(LDFLAGS)  -Os -o $@
+	$(CXX) $^ $(CXXFLAGS) $(LDFLAGS)  -o $@
 
 edfont$(EXE_EXT): edfont.cpp FCFONT $(OAT_OBJ)
-	$(CXX) edfont.cpp $(OAT_OBJ) fcfont/*.o $(CXXFLAGS) $(LDFLAGS)  -Os -o $@
+	$(CXX) edfont.cpp $(OAT_OBJ) fcfont/*.o $(CXXFLAGS) $(LDFLAGS)  -o $@
+
+edsnd$(EXE_EXT): edsnd.cpp PWG $(OAT_OBJ)
+	$(CXX) edsnd.cpp $(OAT_OBJ) pwg/*.o $(CXXFLAGS) -I/usr/include/SDL2 $(LDFLAGS) -o $@
 
 
 
@@ -129,8 +134,12 @@ FCFONT: FORCE
 	make -C fcfont
 
 
+PWG: FORCE
+	make -C pwg
+
+
 FORCE:
-.PHONY: FORCE FCFONT
+.PHONY: FORCE FCFONT PWG
 
 
 
