@@ -56,21 +56,27 @@ ifeq ($(delay),1)
 endif
 
 
-OBJ =                    \
+BASE_OBJ =               \
   pwg_device.o           \
   pwg_wavedevice.o       \
   pwg_noisedevice.o      \
-  pwg_keyrow.o           \
-  pwg_keyboard.o         \
-  pwg_monitor.o          \
   pwg_frequency_table.o  \
 
 
-all: $(OBJ)
+WIDGET_OBJ =             \
+  pwg_keyrow.o           \
+  pwg_keyboard.o         \
+  pwg_monitor.o          \
+
+
+all: $(BASE_OBJ) $(WIDGET_OBJ)
+
+
+base_only: $(BASE_OBJ)
 
 
 clean:
-	rm -f $(OBJ)
+	rm -f  $(BASE_OBJ) $(WIDGET_OBJ)
 
 
 

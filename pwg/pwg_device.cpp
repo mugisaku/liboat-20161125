@@ -15,6 +15,7 @@ Device::
 Device(sample_t  v, bool  m):
 base_volume(v),
 active_volume(v),
+running(false),
 muted(m)
 {
 }
@@ -31,6 +32,14 @@ advance()
 
 bool
 Device::
+is_running() const
+{
+  return running;
+}
+
+
+bool
+Device::
 is_muted() const
 {
   return muted;
@@ -39,6 +48,10 @@ is_muted() const
 
 void    Device::mute(){muted =  true;}
 void  Device::unmute(){muted = false;}
+
+
+void  Device::start(){running =  true;}
+void  Device::stop(){ running = false;}
 
 
 sample_t    Device::get_base_volume() const{return base_volume;}

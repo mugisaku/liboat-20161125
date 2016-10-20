@@ -283,7 +283,7 @@ get_scale_frequency(int  offset)
 {
   //1.05946309436;
 
-  return table[35+offset];
+  return table[30+offset];
 }
 
 

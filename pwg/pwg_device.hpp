@@ -42,15 +42,20 @@ protected:
   sample_t    base_volume;
   sample_t  active_volume;
 
-  bool  muted;
+  bool  running;
+  bool    muted;
 
 public:
   Device(sample_t  v=0, bool m=true);
 
+  bool  is_running() const;
   bool  is_muted() const;
 
   void    mute();
   void  unmute();
+
+  void  start();
+  void   stop();
 
   sample_t    get_base_volume() const;
   sample_t  get_active_volume() const;

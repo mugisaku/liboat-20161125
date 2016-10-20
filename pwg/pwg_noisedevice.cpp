@@ -37,7 +37,7 @@ sample_t
 NoiseDevice::
 get_sample() const
 {
-    if(muted)
+    if(muted || !running)
     {
       return silence;
     }

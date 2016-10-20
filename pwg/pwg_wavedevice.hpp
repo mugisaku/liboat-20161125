@@ -3,6 +3,7 @@
 
 
 #include"pwg_device.hpp"
+#include<vector>
 
 
 
@@ -23,9 +24,25 @@ WaveKind
 };
 
 
+struct
+Note
+{
+  double  frequency;
+
+  uint32_t  counter;
+
+  bool  rest_flag;
+
+};
+
+
 class
 WaveDevice: public Device
 {
+public:
+  using Callback = void (*)();
+
+private:
   WaveKind  wave_kind;
 
   double  frequency;
@@ -36,6 +53,14 @@ WaveDevice: public Device
 
   uint32_t  stream_time;
 
+  std::vector<Note>  note_list;
+
+  uint32_t  note_index;
+
+  Note  note;
+
+  Callback  callback;
+
 public:
   WaveDevice(WaveKind  k=WaveKind::square);
   WaveDevice(WaveKind  k, double  f, sample_t  v, bool  muted_=true);
@@ -43,8 +68,16 @@ public:
   void  change_wave_kind(WaveKind  k);
   void  change_frequency(double  f);
 
-  void  reset();
   void  reset(double  f, sample_t  v, bool  muted_=true);
+
+  void  set_callback(Callback  cb);
+
+  void  append_note(const char*  s);
+
+  void  clear_note();
+  void  rewind_step();
+
+  void  step();
 
   void  advance() override;
 
