@@ -1,4 +1,15 @@
-sine{e//.e//.e//.ecde//z//d/e}
-triangle{e//.e//.e//.ecde//z//d/e}
-sawtooth{c*d*c*}
+sine
+{
+  cdez cdez gedc dedz
+  cdez cdez gedc decz
+  ggeg aagz eedd c*z
+}
+
+
+sawtooth
+{
+  c* d* c* d* e* f* e* f*
+  c* d* c* d* e* f* e* f*
+  c* d* c* d* e* f* c*
+}
 

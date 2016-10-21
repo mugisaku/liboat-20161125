@@ -187,6 +187,12 @@ read_score(const char*&  s)
         }
 
 
+        if(rest_flag)
+        {
+          std::swap(tmp.play_counter,tmp.rest_counter);
+        }
+
+
       note_list.emplace_back(tmp);
 
         if(staccato)
