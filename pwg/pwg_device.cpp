@@ -2,6 +2,8 @@
 #include<limits>
 #include<cmath>
 #include<cstdio>
+#include<cstring>
+#include<cctype>
 
 
 
@@ -13,17 +15,12 @@ namespace pwg{
 
 Device::
 Device(sample_t  v, bool  m):
+play_counter(0),
+rest_counter(0),
 base_volume(v),
 active_volume(v),
 running(false),
 muted(m)
-{
-}
-
-
-void
-Device::
-advance()
 {
 }
 
@@ -52,6 +49,13 @@ void  Device::unmute(){muted = false;}
 
 void  Device::start(){running =  true;}
 void  Device::stop(){ running = false;}
+
+
+void  Device::reset_play_counter(uint32_t  n){play_counter = n;}
+void  Device::reset_rest_counter(uint32_t  n){rest_counter = n;}
+
+uint32_t  Device::get_play_counter() const{return play_counter;}
+uint32_t  Device::get_rest_counter() const{return rest_counter;}
 
 
 sample_t    Device::get_base_volume() const{return base_volume;}
@@ -92,6 +96,38 @@ get_silence()
 {
   return silence;
 }
+
+
+
+
+void
+Device::
+skip_spaces(const char*&  p)
+{
+    while(isspace(*p))
+    {
+      p += 1;
+    }
+}
+
+
+void
+Device::
+skip_comment(const char*&  p)
+{
+    if(*p == '%')
+    {
+      p += 1;
+
+        while((*p != '\0') ||
+              (*p != '\n'))
+        {
+          p += 1;
+        }
+    }
+}
+
+
 
 
 }

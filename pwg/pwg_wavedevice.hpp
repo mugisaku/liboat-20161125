@@ -29,9 +29,8 @@ Note
 {
   double  frequency;
 
-  uint32_t  counter;
-
-  bool  rest_flag;
+  uint32_t  play_counter=0;
+  uint32_t  rest_counter=0;
 
 };
 
@@ -57,8 +56,6 @@ private:
 
   uint32_t  note_index;
 
-  Note  note;
-
   Callback  callback;
 
 public:
@@ -72,12 +69,10 @@ public:
 
   void  set_callback(Callback  cb);
 
-  void  append_note(const char*  s);
+  void  read_score(const char*&  s) override;
+  void  clear_score() override;
 
-  void  clear_note();
-  void  rewind_step();
-
-  void  step();
+  void  rewind() override;
 
   void  advance() override;
 

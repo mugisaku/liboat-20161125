@@ -16,7 +16,7 @@ sine_keyrow(*this,WaveKind::sine),
 square_keyrow(*this,WaveKind::square),
 triangle_keyrow(*this,WaveKind::triangle),
 sawtooth_keyrow(*this,WaveKind::sawtooth),
-noise(1200)
+noise(8000)
 {
   join(new oat::TableColumn({    sine_keyrow.create_table(u"正弦波"),
                                square_keyrow.create_table(u"矩形波"),
@@ -101,6 +101,8 @@ press(SDL_Keycode  kode)
 
   else
     {
+      noise.reset_play_counter(sample_rate*20);
+      noise.start();
       noise.unmute();
     }
 }
@@ -120,6 +122,7 @@ unpress(SDL_Keycode  kode)
   else
     {
       noise.mute();
+      noise.stop();
     }
 }
 

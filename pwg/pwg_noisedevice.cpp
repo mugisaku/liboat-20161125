@@ -12,10 +12,17 @@ namespace pwg{
 
 
 NoiseDevice::
-NoiseDevice(sample_t  v, bool  muted_):
-Device(v,muted_),
-seed(12345678)
+NoiseDevice()
 {
+  rewind();
+}
+
+
+NoiseDevice::
+NoiseDevice(sample_t  v, bool  muted_):
+Device(v,muted_)
+{
+  rewind();
 }
 
 
@@ -31,6 +38,26 @@ advance()
 }
 
 
+void
+NoiseDevice::
+rewind()
+{
+  seed = 1234567890;
+}
+
+
+void
+NoiseDevice::
+read_score(const char*&  s)
+{
+}
+
+
+void
+NoiseDevice::
+clear_score()
+{
+}
 
 
 sample_t
@@ -43,7 +70,7 @@ get_sample() const
     }
 
 
-  return ((seed*65536)/sample_max*active_volume)/65536;
+  return ((seed<<16)/sample_max*active_volume)>>16;
 }
 
 

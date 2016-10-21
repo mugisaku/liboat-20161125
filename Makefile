@@ -91,7 +91,14 @@ OAT_OBJ +=                 \
 .PHONY: all clean FORCE
 
 
-all: $(LIBOAT) aicone$(EXE_EXT) correct$(EXE_EXT) edfont$(EXE_EXT) edsnd$(EXE_EXT) abcplay$(EXE_EXT)
+all: $(LIBOAT)          \
+     aicone$(EXE_EXT)   \
+     correct$(EXE_EXT)  \
+     edfont$(EXE_EXT)   \
+     abcplay$(EXE_EXT)  \
+     abc2wav$(EXE_EXT)  \
+     edsnd$(EXE_EXT)    \
+
 
 clean:
 	rm -f $(OAT_OBJ) $(LIBOAT)
@@ -100,6 +107,7 @@ clean:
 	rm -f edfont$(EXE_EXT)
 	rm -f edsnd$(EXE_EXT)
 	rm -f abcplay$(EXE_EXT)
+	rm -f abc2wav$(EXE_EXT)
 	make -C fcfont clean
 	make -C pwg clean
 
@@ -130,6 +138,9 @@ edsnd$(EXE_EXT): edsnd.cpp PWG $(OAT_OBJ)
 
 abcplay$(EXE_EXT): abcplay.cpp PWG_BASE
 	$(CXX) abcplay.cpp pwg/*.o $(CXXFLAGS) -I/usr/include/SDL2 $(LDFLAGS) -o $@
+
+abc2wav$(EXE_EXT): abc2wav.cpp PWG_BASE
+	$(CXX) abc2wav.cpp pwg/*.o $(CXXFLAGS) -I/usr/include/SDL2 $(LDFLAGS) -o $@
 
 
 

@@ -44,7 +44,7 @@ render()
 
     for(auto  v: wave)
     {
-      v /= 16;
+      v /= 64;
 
       int  y = (255-v);
 

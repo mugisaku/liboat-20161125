@@ -1,4 +1,4 @@
-#include"pwg/pwg_wavedevice.hpp"
+#include"pwg/pwg_box.hpp"
 #include<SDL.h>
 #include<cstdlib>
 #include<cstdio>
@@ -17,8 +17,8 @@ SDL_AudioSpec  want;
 SDL_AudioSpec  have;
 
 
-WaveDevice
-dev(WaveKind::square,get_scale_frequency(0),2400);
+Box
+box;
 
 
 void
@@ -27,18 +27,7 @@ callback(void*  userdata, uint8_t*  stream, int  len)
   auto  dst     = reinterpret_cast<sample_t*>(stream);
   auto  dst_end = dst+(len/2);
 
-    for(auto  p = dst;  p < dst_end;  ++p)
-    {
-      *p = have.silence;
-    }
-
-
-    while(dst < dst_end)
-    {
-      *dst++ = dev.get_sample();
-
-      dev.advance();
-    }
+  box.mix(dst,dst_end);
 }
 
 
@@ -53,42 +42,6 @@ filepath[256];
 
 uint32_t
 finished_time;
-
-
-void
-read(FILE*  f)
-{
-  std::string  s;
-
-    for(;;)
-    {
-      int  c = fgetc(f);
-
-        if(feof(f))
-        {
-          break;
-        }
-
-
-      s.push_back(c);
-    }
-
-
-  fclose(f);
-
-  SDL_PauseAudio(1);
-
-  dev.clear_note();
-
-  dev.append_note(s.data());
-
-  dev.rewind_step();
-
-  dev.unmute();
-  dev.start();
-
-  SDL_PauseAudio(0);
-}
 
 
 void
@@ -114,7 +67,7 @@ finish()
 void
 main_loop()
 {
-    if(!dev.is_running())
+    if(!box.active_device_number)
     {
       auto  now = SDL_GetTicks();
 
@@ -124,17 +77,22 @@ main_loop()
         }
 
 
-      auto  f = fopen(filepath,"rb");
-
-        if(f)
+        try
         {
-          read(f);
+          SDL_PauseAudio(1);
+
+          box.clear();
+
+          box.load(filepath);
+
+          box.ready();
+
+          SDL_PauseAudio(0);
         }
 
-      else
-        {
-          printf("%sが開けませんでした\n",filepath);
 
+        catch(...)
+        {
           std::raise(SIGINT);
         }
     }
@@ -170,24 +128,27 @@ main(int  argc,  char**  argv)
 
     if(sscanf(argv[1],"%256s",filepath) == 1)
     {
-      auto  f = fopen(filepath,"rb");
-
-        if(!f)
+        try
         {
-          printf("%sを開けませんでした\n",filepath);
+          box.load(filepath);
 
-          quit(0);
+          box.ready();
         }
 
 
-      read(f);
+        catch(...)
+        {
+          quit(0);
+        }
     }
 
 
   std::signal(SIGINT ,quit);
   std::signal(SIGTERM,quit);
 
-  dev.set_callback(finish);
+  box.finish = (finish);
+
+  SDL_PauseAudio(0);
 
   printf("Ctrl+Cで終了\n");
 

@@ -39,6 +39,9 @@ Device
 protected:
   static sample_t  silence;
 
+  uint32_t  play_counter;
+  uint32_t  rest_counter;
+
   sample_t    base_volume;
   sample_t  active_volume;
 
@@ -47,6 +50,9 @@ protected:
 
 public:
   Device(sample_t  v=0, bool m=true);
+
+ virtual ~Device(){}
+
 
   bool  is_running() const;
   bool  is_muted() const;
@@ -57,18 +63,31 @@ public:
   void  start();
   void   stop();
 
+  void  reset_play_counter(uint32_t  n);
+  void  reset_rest_counter(uint32_t  n);
+
+  uint32_t  get_play_counter() const;
+  uint32_t  get_rest_counter() const;
+
   sample_t    get_base_volume() const;
   sample_t  get_active_volume() const;
 
   void  change_base_volume(sample_t  v);
   void  change_active_volume(sample_t  v);
 
-  virtual void  advance();
+  virtual void  advance()=0;
+  virtual void   rewind()=0;
 
-  virtual sample_t  get_sample() const;
+  virtual sample_t  get_sample() const=0;
+
+  virtual void  read_score(const char*&  s)=0;
+  virtual void  clear_score()=0;
 
   static void  change_silence(sample_t  v);
   static sample_t  get_silence();
+
+  static void  skip_spaces(const char*&  p);
+  static void  skip_comment(const char*&  p);
 
 };
 

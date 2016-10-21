@@ -100,17 +100,21 @@ set_callback(Callback  cb)
 
 void
 WaveDevice::
-append_note(const char*  s)
+read_score(const char*&  s)
 {
     for(;;)
     {
       Note  tmp;
 
-      tmp.rest_flag  = false;
+      bool  rest_flag = false;
 
-        while(isspace(*s))
+      skip_spaces(s);
+
+        if(*s == '}')
         {
           s += 1;
+
+          break;
         }
 
 
@@ -145,7 +149,7 @@ append_note(const char*  s)
       case('g'): i +=  7;break;
       case('a'): i +=  9;break;
       case('b'): i += 11;break;
-      case('z'): tmp.rest_flag = true;break;
+      case('z'): rest_flag = true;break;
 
       default:
           printf("%cは不正な文字です\n",c);
@@ -175,11 +179,11 @@ append_note(const char*  s)
 
       tmp.frequency = get_scale_frequency(i);
 
-      tmp.counter = sample_rate*2/64*l;
+      tmp.play_counter = sample_rate*2/64*l;
 
         if(staccato)
         {
-          tmp.counter /= 2*staccato;
+          tmp.play_counter /= 2*staccato;
         }
 
 
@@ -187,7 +191,7 @@ append_note(const char*  s)
 
         if(staccato)
         {
-          tmp.rest_flag = true;
+          std::swap(tmp.play_counter,tmp.rest_counter);
 
           note_list.emplace_back(tmp);
         }
@@ -197,7 +201,7 @@ append_note(const char*  s)
 
 void
 WaveDevice::
-clear_note()
+clear_score()
 {
   note_index = 0;
 
@@ -207,34 +211,11 @@ clear_note()
 
 void
 WaveDevice::
-rewind_step()
+rewind()
 {
   note_index = 0;
 
-  step();
-}
-
-
-void
-WaveDevice::
-step()
-{
-    if(note_index < note_list.size())
-    {
-      note = note_list[note_index++];
-
-      change_frequency(note.frequency);
-    }
-
-  else
-    {
-      stop();
-
-        if(callback)
-        {
-          callback();
-        }
-    }
+  advance();
 }
 
 
@@ -244,15 +225,41 @@ void
 WaveDevice::
 advance()
 {
-  stream_time += 1;
-
-    if(note.counter)
+    if(rest_counter)
     {
-      note.counter -= 1;
+      rest_counter -= 1;
 
-        if(!note.counter)
+      return;
+    }
+
+
+    if(play_counter)
+    {
+      play_counter -= 1;
+      stream_time  += 1;
+    }
+
+
+    if(!play_counter)
+    {
+        if(note_index < note_list.size())
         {
-          step();
+          auto&  note = note_list[note_index++];
+
+          play_counter = note.play_counter;
+          rest_counter = note.rest_counter;
+
+          change_frequency(note.frequency);
+        }
+
+      else
+        {
+          stop();
+
+            if(callback)
+            {
+              callback();
+            }
         }
     }
 }
@@ -264,7 +271,7 @@ sample_t
 WaveDevice::
 get_sample() const
 {
-    if(muted || !running || (note.rest_flag && note.counter))
+    if(muted || !running || rest_counter || !fullwidth)
     {
       return silence;
     }
@@ -305,7 +312,7 @@ get_sample() const
       break;
   case(WaveKind::sine):
     {
-      unsigned int  v = (sample_max/2)*std::sin(2*pi/fullwidth*wave_time)+(sample_max/2);
+      unsigned int  v = sample_max*std::sin(2*pi/fullwidth*wave_time)+(sample_max/2);
 
       return ((v<<16)/sample_max*active_volume)>>16;
     }

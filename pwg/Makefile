@@ -61,6 +61,8 @@ BASE_OBJ =               \
   pwg_wavedevice.o       \
   pwg_noisedevice.o      \
   pwg_frequency_table.o  \
+  pwg_box.o              \
+  pwg_wave.o             \
 
 
 WIDGET_OBJ =             \

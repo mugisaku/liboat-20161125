@@ -178,16 +178,6 @@ main_loop()
               {
                 kbd->press(evt.key.keysym.sym);
               }
-/*
-            case(SDLK_l): sq.change_frequency(get_scale_frequency(  0));break;
-            case(SDLK_k): sq.change_frequency(get_scale_frequency(- 2));break;
-            case(SDLK_j): sq.change_frequency(get_scale_frequency(- 4));break;
-            case(SDLK_h): sq.change_frequency(get_scale_frequency(- 5));break;
-            case(SDLK_g): sq.change_frequency(get_scale_frequency(- 7));break;
-            case(SDLK_f): sq.change_frequency(get_scale_frequency(- 9));break;
-            case(SDLK_d): sq.change_frequency(get_scale_frequency(-10));break;
-            case(SDLK_s): sq.change_frequency(get_scale_frequency(-12));break;
-*/
             break;
 
           case(SDL_MOUSEBUTTONUP):
