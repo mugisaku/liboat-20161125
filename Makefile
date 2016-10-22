@@ -110,6 +110,7 @@ clean:
 	rm -f abc2wav$(EXE_EXT)
 	make -C fcfont clean
 	make -C pwg clean
+	make -C pwg_widget clean
 
 
 objects: $(OAT_OBJ)
@@ -133,13 +134,13 @@ correct$(EXE_EXT): correct.cpp space.cpp $(OAT_OBJ)
 edfont$(EXE_EXT): edfont.cpp FCFONT $(OAT_OBJ)
 	$(CXX) edfont.cpp $(OAT_OBJ) fcfont/*.o $(CXXFLAGS) $(LDFLAGS)  -o $@
 
-edsnd$(EXE_EXT): edsnd.cpp PWG $(OAT_OBJ)
-	$(CXX) edsnd.cpp $(OAT_OBJ) pwg/*.o $(CXXFLAGS) -I/usr/include/SDL2 $(LDFLAGS) -o $@
+edsnd$(EXE_EXT): edsnd.cpp PWG PWG_WIDGET $(OAT_OBJ)
+	$(CXX) edsnd.cpp $(OAT_OBJ) pwg/*.o pwg_widget/*.o $(CXXFLAGS) -I/usr/include/SDL2 $(LDFLAGS) -o $@
 
-abcplay$(EXE_EXT): abcplay.cpp PWG_BASE
+abcplay$(EXE_EXT): abcplay.cpp PWG
 	$(CXX) abcplay.cpp pwg/*.o $(CXXFLAGS) -I/usr/include/SDL2 $(LDFLAGS) -o $@
 
-abc2wav$(EXE_EXT): abc2wav.cpp PWG_BASE
+abc2wav$(EXE_EXT): abc2wav.cpp PWG
 	$(CXX) abc2wav.cpp pwg/*.o $(CXXFLAGS) -I/usr/include/SDL2 $(LDFLAGS) -o $@
 
 
@@ -153,12 +154,12 @@ PWG: FORCE
 	make -C pwg
 
 
-PWG_BASE: FORCE
-	make -C pwg base_only
+PWG_WIDGET: FORCE
+	make -C pwg_widget
 
 
 FORCE:
-.PHONY: FORCE FCFONT PWG PWG_BASE
+.PHONY: FORCE FCFONT PWG PWG_WIDGET
 
 
 

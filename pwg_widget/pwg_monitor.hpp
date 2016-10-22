@@ -2,7 +2,7 @@
 #define PWG_MONITOR_HPP_INCLUDED
 
 
-#include"pwg_device.hpp"
+#include"pwg/pwg_device.hpp"
 #include"oat.hpp"
 
 

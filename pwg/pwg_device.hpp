@@ -87,7 +87,7 @@ public:
   static sample_t  get_silence();
 
   static void  skip_spaces(const char*&  p);
-  static void  skip_comment(const char*&  p);
+  static int  skip_comment(const char*&  p);
 
 };
 

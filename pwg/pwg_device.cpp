@@ -111,20 +111,32 @@ skip_spaces(const char*&  p)
 }
 
 
-void
+int
 Device::
 skip_comment(const char*&  p)
 {
+  const char*  start = p;
+
     if(*p == '%')
     {
       p += 1;
 
-        while((*p != '\0') ||
-              (*p != '\n'))
+        while(*p)
         {
+            if(*p == '\n')
+            {
+              p += 1;
+
+              break;
+            }
+
+
           p += 1;
         }
     }
+
+
+  return p-start;
 }
 
 

@@ -70,7 +70,7 @@ get_sample() const
     }
 
 
-  return ((seed<<16)/sample_max*active_volume)>>16;
+  return (((seed&0xFFFF)<<16)/sample_max*active_volume)>>16;
 }
 
 

@@ -1,8 +1,8 @@
 #include"oat.hpp"
 #include"sdlut.hpp"
 #include"pwg/pwg_device.hpp"
-#include"pwg/pwg_keyboard.hpp"
-#include"pwg/pwg_monitor.hpp"
+#include"pwg_widget/pwg_keyboard.hpp"
+#include"pwg_widget/pwg_monitor.hpp"
 
 
 

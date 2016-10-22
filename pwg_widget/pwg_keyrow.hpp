@@ -5,7 +5,7 @@
 #include<SDL.h>
 #include<list>
 #include"oat.hpp"
-#include"pwg_wavedevice.hpp"
+#include"pwg/pwg_wavedevice.hpp"
 
 
 

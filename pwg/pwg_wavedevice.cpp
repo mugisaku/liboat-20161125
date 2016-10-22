@@ -124,6 +124,12 @@ read_score(const char*&  s)
         }
 
 
+        if(skip_comment(s))
+        {
+          continue;
+        }
+
+
       char  c = *s++;
 
       char  marks[8] = {0};
@@ -163,10 +169,10 @@ read_score(const char*&  s)
             {
           case('<'): i -= 12;break;
           case('>'): i += 12;break;
-          case('+'): i +=  1;break;
           case('-'): i -=  1;break;
-          case('*'): l *=  2;break;
+          case('+'): i +=  1;break;
           case('/'): l /=  2;break;
+          case('*'): l *=  2;break;
           case('.'): staccato += 1;break;
           case(' '): break;
 
@@ -174,6 +180,18 @@ read_score(const char*&  s)
               printf("%cは不正な文字です\n",c);
               return;
             }
+        }
+
+
+        if(i < 0)
+        {
+          i = 0;
+        }
+
+      else
+        if( i > 255)
+        {
+          i = 255;
         }
 
 

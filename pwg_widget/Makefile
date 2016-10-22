@@ -56,13 +56,10 @@ ifeq ($(delay),1)
 endif
 
 
-OBJ =                    \
-  pwg_device.o           \
-  pwg_wavedevice.o       \
-  pwg_noisedevice.o      \
-  pwg_frequency_table.o  \
-  pwg_box.o              \
-  pwg_wave.o             \
+OBJ =             \
+  pwg_keyrow.o    \
+  pwg_keyboard.o  \
+  pwg_monitor.o   \
 
 
 all: $(OBJ)

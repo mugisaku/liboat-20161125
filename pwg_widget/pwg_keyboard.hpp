@@ -3,7 +3,7 @@
 
 
 #include"pwg_keyrow.hpp"
-#include"pwg_noisedevice.hpp"
+#include"pwg/pwg_noisedevice.hpp"
 #include<SDL.h>
 
 
