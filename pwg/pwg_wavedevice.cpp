@@ -132,7 +132,7 @@ read_score(const char*&  s)
 
       char  c = *s++;
 
-      char  marks[8] = {0};
+      char  marks[256] = {0};
 
       int  staccato = 0;
 
@@ -140,7 +140,7 @@ read_score(const char*&  s)
       int  l = 16;
       int  n =  0;
 
-        if(sscanf(s,"%8[<>+-*/.]%n",marks,&n) == 1)
+        if(sscanf(s,"%256[<>+-*/. \n]%n",marks,&n) == 1)
         {
           s += n;
         }
@@ -175,6 +175,7 @@ read_score(const char*&  s)
           case('*'): l *=  2;break;
           case('.'): staccato += 1;break;
           case(' '): break;
+          case('\n'): break;
 
           default:
               printf("%cは不正な文字です\n",c);
