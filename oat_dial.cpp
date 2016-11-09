@@ -98,11 +98,13 @@ void
 Dial::
 reset(int  max, int  step, int  min)
 {
+  int  old_value = value;
+
   value_max = max;
   value_min = min;
   value_step = step;
 
-  need_to_redraw();
+  change_value(value);
 }
 
 
