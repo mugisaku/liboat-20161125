@@ -137,8 +137,8 @@ static constexpr int  square_size = 16;
 public:
 ColorSelector()
 {
-  change_content_width( frame_size*color_number);
-  change_content_height(frame_size);
+  change_content_width( frame_size*color_number/2);
+  change_content_height(frame_size*2);
 }
 
 
@@ -149,7 +149,8 @@ process_mouse(const Mouse&  mouse) override
 
     if(mouse.left.test_pressing())
     {
-      color_index = pt.x/frame_size;
+      color_index = (pt.x/frame_size)<<1;
+      color_index |= (pt.y < frame_size)?0:1;
 
       need_to_redraw();
     }
@@ -164,13 +165,17 @@ render() override
 
   auto  pt = content.point;
 
-    for(int  x = 0;  x < color_number;  x += 1)
+  const Color*  color = ::palette;
+
+    for(int  x = 0;  x < color_number/2;  ++x)
     {
-      fill_rect(::palette[x],pt.x+(frame_size*x),pt.y,square_size,square_size);
+      fill_rect(*color++,pt.x+(frame_size*x),pt.y,square_size,square_size);
+      fill_rect(*color++,pt.x+(frame_size*x),pt.y+frame_size,square_size,square_size);
     }
 
 
-  draw_rect(const_color::white,pt.x+(frame_size*color_index),pt.y,frame_size,frame_size);
+  draw_rect(const_color::white,pt.x+(frame_size*(color_index>>1)),
+                               pt.y+(color_index&1? frame_size:0),frame_size,frame_size);
 }
 };
 
@@ -323,16 +328,27 @@ render() override
 
   auto  pt = content.point;
 
-    for(int  y = 0;  y < base_size;  y += 1){
-    for(int  x = 0;  x < base_size;  x += 1){
-      auto  v = png.get_pixel(x,base_index+y);
+    for(int  y = 0;  y < base_size;  y += 1)
+    {
+      draw_hline(const_color::yellow,pt.x,
+                                     pt.y+pixel_size*y,
+                                     pixel_size*base_size);
 
-        if(v&8)
+        for(int  x = 0;  x < base_size;  x += 1)
         {
-          fill_rect(::palette[v&7],pt.x+(pixel_size*x),
-                                   pt.y+(pixel_size*y),pixel_size,pixel_size);
+          draw_vline(const_color::yellow,pt.x+pixel_size*x,
+                                         pt.y,
+                                         pixel_size*base_size);
+
+          auto  v = png.get_pixel(x,base_index+y);
+
+            if(v&8)
+            {
+              fill_rect(::palette[v&7],pt.x+(pixel_size*x),
+                                       pt.y+(pixel_size*y),pixel_size,pixel_size);
+            }
         }
-    }}
+    }
 }
 
 

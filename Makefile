@@ -110,6 +110,7 @@ clean:
 	rm -f mkptrn$(EXE_EXT)
 	rm -f abcplay$(EXE_EXT)
 	rm -f abc2wav$(EXE_EXT)
+	rm -f *.js *.html *.html.mem
 	make -C fcfont clean
 	make -C pwg clean
 	make -C pwg_widget clean
