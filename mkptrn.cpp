@@ -328,18 +328,13 @@ render() override
 
   auto  pt = content.point;
 
+  constexpr Color  l1(0x7F,0x7F,0x0);
+  constexpr Color  l2(0xFF,0xFF,0x00);
+
     for(int  y = 0;  y < base_size;  y += 1)
     {
-      draw_hline(const_color::yellow,pt.x,
-                                     pt.y+pixel_size*y,
-                                     pixel_size*base_size);
-
         for(int  x = 0;  x < base_size;  x += 1)
         {
-          draw_vline(const_color::yellow,pt.x+pixel_size*x,
-                                         pt.y,
-                                         pixel_size*base_size);
-
           auto  v = png.get_pixel(x,base_index+y);
 
             if(v&8)
@@ -347,8 +342,27 @@ render() override
               fill_rect(::palette[v&7],pt.x+(pixel_size*x),
                                        pt.y+(pixel_size*y),pixel_size,pixel_size);
             }
+
+
+          draw_vline(l1,pt.x+pixel_size*x,
+                        pt.y,
+                        pixel_size*base_size);
         }
+
+
+      draw_hline(l1,pt.x,
+                    pt.y+pixel_size*y,
+                    pixel_size*base_size);
     }
+
+
+  draw_hline(l2,pt.x,
+                pt.y+pixel_size*8+1,
+                pixel_size*base_size);
+
+  draw_vline(l2,pt.x+pixel_size*8+1,
+                pt.y,
+                pixel_size*base_size);
 }
 
 
