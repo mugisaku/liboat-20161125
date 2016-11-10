@@ -96,6 +96,7 @@ all: $(LIBOAT)          \
      correct$(EXE_EXT)  \
      edfont$(EXE_EXT)   \
      mkptrn$(EXE_EXT)   \
+     animk$(EXE_EXT)   \
      abcplay$(EXE_EXT)  \
      abc2wav$(EXE_EXT)  \
      edsnd$(EXE_EXT)    \
@@ -108,6 +109,7 @@ clean:
 	rm -f edfont$(EXE_EXT)
 	rm -f edsnd$(EXE_EXT)
 	rm -f mkptrn$(EXE_EXT)
+	rm -f animk$(EXE_EXT)
 	rm -f abcplay$(EXE_EXT)
 	rm -f abc2wav$(EXE_EXT)
 	rm -f *.js *.html *.html.mem
@@ -136,6 +138,9 @@ correct$(EXE_EXT): correct.cpp space.cpp $(OAT_OBJ)
 
 mkptrn$(EXE_EXT): mkptrn.cpp pngio.cpp $(OAT_OBJ)
 	$(CXX) mkptrn.cpp $(OAT_OBJ) $(CXXFLAGS) $(LDFLAGS) -lpng  -o $@
+
+animk$(EXE_EXT): animk.cpp pngio.cpp $(OAT_OBJ)
+	$(CXX) animk.cpp $(OAT_OBJ) $(CXXFLAGS) $(LDFLAGS) -lpng  -o $@
 
 edfont$(EXE_EXT): edfont.cpp FCFONT $(OAT_OBJ)
 	$(CXX) edfont.cpp $(OAT_OBJ) fcfont/*.o $(CXXFLAGS) $(LDFLAGS)  -o $@
