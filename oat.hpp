@@ -6,7 +6,6 @@
 #include"oat_widget.hpp"
 #include"oat_master.hpp"
 #include"oat_text.hpp"
-#include"oat_canvas.hpp"
 #include"oat_button.hpp"
 #include"oat_dial.hpp"
 #include"oat_table.hpp"

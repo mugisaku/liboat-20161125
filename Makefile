@@ -69,16 +69,12 @@ OAT_OBJ +=                 \
   oat_box.o                \
   oat_widget.o             \
   oat_widget_render.o      \
+  oat_container.o          \
   oat_iconmodule.o         \
   oat_icon.o               \
   oat_image.o              \
   oat_image_directcolor.o  \
   oat_image_indexcolor.o   \
-  oat_canvas.o             \
-  oat_canvas_transform.o   \
-  oat_canvas_draw.o        \
-  oat_canvas_draw_line.o   \
-  oat_canvas_fill_area.o   \
   oat_text.o               \
   oat_dial.o               \
   oat_buttonmodule.o       \
@@ -114,6 +110,8 @@ clean:
 	rm -f abc2wav$(EXE_EXT)
 	rm -f *.js *.html *.html.mem
 	make -C fcfont clean
+	make -C libaicone clean
+	make -C libmg clean
 	make -C pwg clean
 	make -C pwg_widget clean
 
@@ -130,17 +128,17 @@ endif
 
 
 
-aicone$(EXE_EXT): aicone.cpp $(OAT_OBJ)
-	$(CXX) $^ $(CXXFLAGS) $(LDFLAGS)  -o $@
+aicone$(EXE_EXT): aicone.cpp LIBAICONE $(OAT_OBJ)
+	$(CXX)  aicone.cpp $(OAT_OBJ) libaicone/*.o $(CXXFLAGS) $(LDFLAGS)  -o $@
 
 correct$(EXE_EXT): correct.cpp space.cpp $(OAT_OBJ)
 	$(CXX) $^ $(CXXFLAGS) $(LDFLAGS)  -o $@
 
-mkptrn$(EXE_EXT): mkptrn.cpp pngio.cpp $(OAT_OBJ)
-	$(CXX) mkptrn.cpp $(OAT_OBJ) $(CXXFLAGS) $(LDFLAGS) -lpng  -o $@
+mkptrn$(EXE_EXT): mkptrn.cpp LIBMG $(OAT_OBJ)
+	$(CXX) mkptrn.cpp libmg/*.o $(OAT_OBJ) $(CXXFLAGS) $(LDFLAGS) -lpng  -o $@
 
-animk$(EXE_EXT): animk.cpp pngio.cpp $(OAT_OBJ)
-	$(CXX) animk.cpp $(OAT_OBJ) $(CXXFLAGS) $(LDFLAGS) -lpng  -o $@
+animk$(EXE_EXT): animk.cpp LIBMG $(OAT_OBJ)
+	$(CXX) animk.cpp libmg/*.o $(OAT_OBJ) $(CXXFLAGS) $(LDFLAGS) -lpng  -o $@
 
 edfont$(EXE_EXT): edfont.cpp FCFONT $(OAT_OBJ)
 	$(CXX) edfont.cpp $(OAT_OBJ) fcfont/*.o $(CXXFLAGS) $(LDFLAGS)  -o $@
@@ -157,20 +155,27 @@ abc2wav$(EXE_EXT): abc2wav.cpp PWG
 
 
 
-FCFONT: FORCE
+FCFONT:
 	make -C fcfont
 
 
-PWG: FORCE
+PWG:
 	make -C pwg
 
 
-PWG_WIDGET: FORCE
+LIBMG:
+	make -C libmg
+
+
+PWG_WIDGET:
 	make -C pwg_widget
 
 
-FORCE:
-.PHONY: FORCE FCFONT PWG PWG_WIDGET
+LIBAICONE:
+	make -C libaicone
+
+
+.PHONY: LIBMG LIBAICONE FCFONT PWG PWG_WIDGET
 
 
 

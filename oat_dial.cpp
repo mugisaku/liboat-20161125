@@ -43,7 +43,11 @@ up_value_(Button&  btn)
 
 
 Dial::
-Dial(Widget*  caption, int  max, int  step, int  min):
+Dial(Widget*  caption_, int  max, int  step, int  min):
+caption(caption_),
+text(new Text(u"xxxx/xxxx")),
+up_button(new Button(new Icon({&const_icon::right}))),
+down_button(new Button(new Icon({&const_icon::left }))),
 value(min),
 callback(nullptr)
 {
@@ -57,28 +61,21 @@ callback(nullptr)
     }
 
 
-  caption_ptr = &join(caption,0,0);
-
-  text_ptr = &join(new Text(u"xxxx/xxxx"),tail,0);
-
-
-  (*text_ptr)->update_sizes();
-
-  tail += (*text_ptr)->width;
-
-  auto  down_button = new Button(new Icon({&const_icon::left }));
-  auto    up_button = new Button(new Icon({&const_icon::right}));
+  join(caption,0,0);
+  join(text,tail,0);
 
 
+  text->update_sizes();
 
-  down_button_ptr = &join(down_button,tail,0);
+  tail += text->width;
+
+  join(down_button,tail,0);
 
   down_button->update_sizes();
 
   tail += down_button->width;
 
-  up_button_ptr = &join(up_button,tail,0);
-
+  join(up_button,tail,0);
 
   down_button->set_callback(down_value_);
     up_button->set_callback(  up_value_);
@@ -118,6 +115,21 @@ set_callback(Callback  cb)
 
 void
 Dial::
+change_value_max(int  v)
+{
+  value_max = v;
+
+
+  char  buf[256];
+
+  snprintf(buf,sizeof(buf),format,value,value_max);
+
+  text->change_string(buf);
+}
+
+
+void
+Dial::
 change_value(int  v)
 {
   const int  old_value = value                                            ;
@@ -133,9 +145,7 @@ change_value(int  v)
 
   snprintf(buf,sizeof(buf),format,value,value_max);
 
-  static_cast<Text*>(*text_ptr)->change_string(buf);
-
-  need_to_redraw();
+  text->change_string(buf);
 }
 
 

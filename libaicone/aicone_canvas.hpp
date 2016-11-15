@@ -1,5 +1,5 @@
-#ifndef OAT_CANVAS_HPP
-#define OAT_CANVAS_HPP
+#ifndef AICONE_CANVAS_HPP
+#define AICONE_CANVAS_HPP
 
 
 #include"oat_widget.hpp"

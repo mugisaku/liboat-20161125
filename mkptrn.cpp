@@ -1,6 +1,10 @@
 #include"oat.hpp"
 #include"sdlut.hpp"
-#include"pngio.cpp"
+#include"libmg/mg_core.hpp"
+#include"libmg/mg_colorselector.hpp"
+#include"libmg/mg_patterndisplay.hpp"
+#include"libmg/mg_canvas.hpp"
+#include"libmg/mg_widget.hpp"
 
 
 #ifdef EMSCRIPTEN
@@ -97,376 +101,6 @@ process_window(const SDL_WindowEvent&  evt)
 
 
 
-pngio::Object
-png;
-
-
-constexpr int  base_size = 16;
-constexpr int  color_number = 8;
-
-
-const Color
-palette[color_number] =
-{
-  Color(0x1F),
-  Color(0x3F),
-  Color(0x5F),
-  Color(0x7F),
-  Color(0x9F),
-  Color(0xBF),
-  Color(0xDF),
-  Color(0xFF),
-};
-
-
-int
-color_index;
-
-
-int
-base_index;
-
-
-class
-ColorSelector: public Widget
-{
-static constexpr int   frame_size = 20;
-static constexpr int  square_size = 16;
-
-
-public:
-ColorSelector()
-{
-  change_content_width( frame_size*color_number/2);
-  change_content_height(frame_size*2);
-}
-
-
-void
-process_mouse(const Mouse&  mouse) override
-{
-  auto  pt = get_mouse_point(mouse);
-
-    if(mouse.left.test_pressing())
-    {
-      color_index = (pt.x/frame_size)<<1;
-      color_index |= (pt.y < frame_size)?0:1;
-
-      need_to_redraw();
-    }
-}
-
-
-void
-render() override
-{
-  fill();
-
-
-  auto  pt = content.point;
-
-  const Color*  color = ::palette;
-
-    for(int  x = 0;  x < color_number/2;  ++x)
-    {
-      fill_rect(*color++,pt.x+(frame_size*x),pt.y,square_size,square_size);
-      fill_rect(*color++,pt.x+(frame_size*x),pt.y+frame_size,square_size,square_size);
-    }
-
-
-  draw_rect(const_color::white,pt.x+(frame_size*(color_index>>1)),
-                               pt.y+(color_index&1? frame_size:0),frame_size,frame_size);
-}
-};
-
-
-
-
-class
-Display: public Widget
-{
-static constexpr int  pixel_size = 2;
-public:
-Display()
-{
-  change_content_width( base_size*pixel_size*4);
-  change_content_height(base_size*pixel_size*4);
-}
-
-
-void
-render() override
-{
-  fill();
-
-  auto  pt = content.point;
-
-    for(int  y = 0;  y < 4;  y += 1){
-    for(int  x = 0;  x < 4;  x += 1){
-    for(int  yy = 0;  yy < base_size;  yy += 1){
-    for(int  xx = 0;  xx < base_size;  xx += 1){
-      auto  v = png.get_pixel(xx,base_index+yy);
-
-        if(v&8)
-        {
-          fill_rect(::palette[v&7],pt.x+(base_size*pixel_size*x)+(pixel_size*xx),
-                                   pt.y+(base_size*pixel_size*y)+(pixel_size*yy),pixel_size,pixel_size);
-        }
-    }}}}
-}
-};
-
-
-Widget*
-dsp;
-
-
-RadioForm*
-radfrm;
-
-
-int
-tool_index;
-
-
-class
-Base: public Widget
-{
-static constexpr int  pixel_size = 10;
-
-bool  table[base_size][base_size];
-
-
-public:
-Base()
-{
-  change_content_width( base_size*pixel_size);
-  change_content_height(base_size*pixel_size);
-}
-
-
-void
-search(int  x, int  y, uint8_t  target)
-{
-  auto&  e = table[y][x];
-
-    if(!e)
-    {
-      e = true;
-
-      auto&  pixel = png.get_pixel(x,base_index+y);
-
-        if(pixel == target)
-        {
-          pixel = (color_index|8);
-
-            if(x                ){search(x-1,y  ,target);}
-            if(y                ){search(x  ,y-1,target);}
-            if(x < (base_size-1)){search(x+1,y  ,target);}
-            if(y < (base_size-1)){search(x  ,y+1,target);}
-        }
-    }
-}
-
-
-void
-process_mouse(const Mouse&  mouse) override
-{
-  auto  pt = get_mouse_point(mouse);
-
-  int  x = pt.x/pixel_size;
-  int  y = pt.y/pixel_size;
-
-    switch(tool_index)
-    {
-  case(0):
-        if(mouse.left.test_pressing())
-        {
-          png.get_pixel(x,base_index+y) = color_index|8;
-
-          dsp->need_to_redraw();
-
-          need_to_redraw();
-        }
-
-      else
-        if(mouse.right.test_pressing())
-        {
-          png.get_pixel(x,base_index+y) = 0;
-
-          dsp->need_to_redraw();
-
-          need_to_redraw();
-        }
-      break;
-  case(1):
-        if(mouse.left.test_pressing())
-        {
-          auto  target = png.get_pixel(x,base_index+y);
-
-            if(target != (color_index|8))
-            {
-              std::memset(&table,0,sizeof(table));
-
-              search(x,y,target);
-
-              dsp->need_to_redraw();
-
-              need_to_redraw();
-            }
-        }
-      break;
-    }
-}
-
-
-void
-render() override
-{
-  fill();
-
-
-  auto  pt = content.point;
-
-  constexpr Color  l1(0x7F,0x7F,0x0);
-  constexpr Color  l2(0xFF,0xFF,0x00);
-
-    for(int  y = 0;  y < base_size;  y += 1)
-    {
-        for(int  x = 0;  x < base_size;  x += 1)
-        {
-          auto  v = png.get_pixel(x,base_index+y);
-
-            if(v&8)
-            {
-              fill_rect(::palette[v&7],pt.x+(pixel_size*x),
-                                       pt.y+(pixel_size*y),pixel_size,pixel_size);
-            }
-
-
-          draw_vline(l1,pt.x+pixel_size*x,
-                        pt.y,
-                        pixel_size*base_size);
-        }
-
-
-      draw_hline(l1,pt.x,
-                    pt.y+pixel_size*y,
-                    pixel_size*base_size);
-    }
-
-
-  draw_hline(l2,pt.x,
-                pt.y+pixel_size*8+1,
-                pixel_size*base_size);
-
-  draw_vline(l2,pt.x+pixel_size*8+1,
-                pt.y,
-                pixel_size*base_size);
-}
-
-
-
-};
-
-
-Widget*
-bas;
-
-
-Dial*
-dial;
-
-
-void
-save(Button&  btn)
-{
-    if(btn->test_unpressed())
-    {
-      static int  n;
-
-      char  buf[256];
-
-      snprintf(buf,sizeof(buf),"__PTRN%03d.png",n++);
-
-      png.write(buf);
-    }
-}
-
-
-void
-fill(Button&  btn)
-{
-    if(btn->test_unpressed())
-    {
-        for(int  y = 0;  y < base_size;  y += 1){
-        for(int  x = 0;  x < base_size;  x += 1){
-          png.get_pixel(x,base_index+y) = 8|color_index;
-        }}
-
-
-      dsp->need_to_redraw();
-      bas->need_to_redraw();
-    }
-}
-
-
-void
-change_tool(RadioForm::Member&  m)
-{
-    if(m.current)
-    {
-      tool_index = m.index;
-    }
-}
-
-
-void
-append_new(Button&  btn)
-{
-    if(btn->test_unpressed())
-    {
-      png.resize(base_size,png.height+base_size);
-
-      dial->reset(png.height/base_size,1,1);
-    }
-}
-
-
-void
-change(Dial&  d, int  old_value)
-{
-  base_index = base_size*(d.get_value()-1);
-
-  dsp->need_to_redraw();
-  bas->need_to_redraw();
-}
-
-
-void
-reset_palette()
-{
-  png.palette.resize(color_number*2);
-
-  png.set_palette_gray( 0,0x1F);
-  png.set_palette_gray( 1,0x3F);
-  png.set_palette_gray( 2,0x5F);
-  png.set_palette_gray( 3,0x7F);
-  png.set_palette_gray( 4,0x9F);
-  png.set_palette_gray( 5,0xBF);
-  png.set_palette_gray( 6,0xDF);
-  png.set_palette_gray( 7,0xFF);
-  png.set_palette_gray( 8,0x1F);
-  png.set_palette_gray( 9,0x3F);
-  png.set_palette_gray(10,0x5F);
-  png.set_palette_gray(11,0x7F);
-  png.set_palette_gray(12,0x9F);
-  png.set_palette_gray(13,0xBF);
-  png.set_palette_gray(14,0xDF);
-  png.set_palette_gray(15,0xFF);
-}
-
-
 void
 construct_widgets()
 {
@@ -482,40 +116,20 @@ construct_widgets()
   default_style.bottom_padding = 2;
 
 
-  png.resize(base_size,base_size);
+  core::set_parameter(16,16,1);
 
-  reset_palette();
-
-  dsp = new Display;
-  bas = new Base;
-
-  dsp->style.background_color = const_color::blue;
-  bas->style.background_color = const_color::blue;
-
-  dial = new Dial(nullptr,1,1,1);
-
-  dial->set_callback(change);
-
+  auto      cv = new Canvas;
+  auto     dsp = new PatternDisplay;
   auto  colsel = new ColorSelector;
 
-  auto  save_btn = new Button(new Text(u"PNGで保存"));
-  auto  appn_btn = new Button(new Text(u"新規追加"));
-
-  radfrm = new RadioForm({new Text(u"点を打つ"),new Text(u"領域を塗りつぶす")});
-
-  radfrm->set_callback(change_tool);
-
-  auto  fill_btn = new Button(new Text(u"　全塗りつぶし"));
-
-  save_btn->set_callback(save);
-  appn_btn->set_callback(append_new);
-  fill_btn->set_callback(fill);
+  core::set_canvas_updater(cv);
+  core::set_patterndisplay_updater(dsp);
+  core::set_colorselector_updater(colsel);
 
   master.join(new TableColumn({colsel,
-                               new TableRow({bas,dsp}),
-                               new TableRow({radfrm,fill_btn}),
-                               new TableRow({dial,appn_btn}),
-                               save_btn}),0,0);
+                               new TableRow({cv,dsp}),
+                               create_tool_widget(),
+                               create_manager_widget()}),0,0);
 
   master.update();
 }
@@ -524,16 +138,7 @@ construct_widgets()
 void
 load(char*  path)
 {
-  png.read(path);
-
-  reset_palette();
-
-  base_index = 0;
-
-  dial->reset(png.height/base_size,1,1);
-
-  bas->need_to_redraw();
-  dsp->need_to_redraw();
+  core::read(path);
 
   SDL_free(path);
 }

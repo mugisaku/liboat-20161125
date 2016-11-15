@@ -4,6 +4,7 @@
 
 #include"oat_icon.hpp"
 #include"oat_text.hpp"
+#include"oat_container.hpp"
 #include"oat_buttonmodule.hpp"
 
 
@@ -13,7 +14,7 @@ namespace oat{
 
 
 class
-Button: public Widget
+Button: public Container
 {
 public:
   using Callback = void  (*)(Button&  btn);

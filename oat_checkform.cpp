@@ -55,7 +55,7 @@ append_child(Widget*  child, const IconModule&  a, const IconModule&  b)
 {
     if(child)
     {
-      int  i = child_count;
+      int  i = children.size();
 
       auto  ico = new Icon({&a,&b});
 

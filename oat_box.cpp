@@ -28,6 +28,14 @@ get_content_rectangle() const
 }
 
 
+const Point&
+Box::
+get_relative_point() const
+{
+  return relative_point;
+}
+
+
 void
 Box::
 change_name(const char*  s)

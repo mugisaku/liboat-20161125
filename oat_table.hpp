@@ -2,7 +2,7 @@
 #define OAT_TABLE_HPP
 
 
-#include"oat_widget.hpp"
+#include"oat_container.hpp"
 #include<initializer_list>
 
 
@@ -10,7 +10,7 @@ namespace oat{
 
 
 class
-TableElement: public Widget
+TableElement: public Container
 {
 protected:
   Point  relative_tail_point;

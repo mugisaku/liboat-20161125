@@ -3,13 +3,14 @@
 
 
 #include"oat_imagemodule.hpp"
+#include"oat_container.hpp"
 
 
 namespace oat{
 
 
 class
-Master final: public Widget
+Master final: public Container
 {
   DirectColorImageModule  module;
 

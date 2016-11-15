@@ -99,7 +99,7 @@ update()
 {
   ButtonModule::unset_shortlived_all();
 
-    if(test_flag(Flag::needed_to_reform))
+    if(test_flag(needed_to_reform_flag))
     {
       reform();
 
@@ -111,9 +111,9 @@ update()
     }
 
 
-  bool  flag = (test_flag(Flag::needed_to_redraw_perfect) ||
-                test_flag(Flag::needed_to_redraw_self   ) ||
-                test_flag(Flag::needed_to_redraw_child  ));
+  bool  flag = (test_flag(needed_to_redraw_perfect_flag) ||
+                test_flag(needed_to_redraw_self_flag   ) ||
+                test_flag(needed_to_redraw_child_flag  ));
 
   try_redraw();
 

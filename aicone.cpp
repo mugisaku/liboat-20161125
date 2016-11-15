@@ -1,3 +1,4 @@
+#include"libaicone/aicone_canvas.hpp"
 #include"oat.hpp"
 #include"sdlut.hpp"
 

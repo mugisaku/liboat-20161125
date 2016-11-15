@@ -1,4 +1,5 @@
 #include"oat_widget.hpp"
+#include"oat_container.hpp"
 #include"oat.hpp"
 
 
@@ -13,8 +14,7 @@ Widget::
 Widget():
 parent(nullptr),
 userdata(nullptr),
-flags(0),
-child_count(0)
+flags(0)
 {
 }
 
@@ -22,16 +22,24 @@ child_count(0)
 Widget::
 ~Widget()
 {
-    for(auto  ptr: children)
-    {
-      delete ptr;
-    }
 }
 
 
 
 
-Widget*
+void
+Widget::
+change_parent(Container&  new_parent, int  x, int  y)
+{
+  parent = &new_parent;
+
+  relative_point.reset(x,y);
+
+  need_to_reform();
+}
+
+
+Container*
 Widget::
 get_parent() const
 {
@@ -41,40 +49,6 @@ get_parent() const
 
 void   Widget::set_userdata(void*  ptr)      {       userdata = ptr;}
 void*  Widget::get_userdata(          ) const{return userdata      ;}
-
-
-Widget*&
-Widget::
-join(Widget*  child, int  x, int  y)
-{
-    if(child)
-    {
-      child->parent = this;
-
-      child->relative_point.reset(x,y);
-
-      child->need_to_reform();
-    }
-
-
-  children.emplace_back(child);
-
-  child_count += 1;
-
-  return children.back();
-}
-
-
-void
-Widget::
-rejoin(Widget&  child, int  x, int  y)
-{
-  child.parent = this;
-
-  child.relative_point.reset(x,y);
-
-  child.need_to_reform();
-}
 
 
 
@@ -95,43 +69,16 @@ get_mouse_point(const Mouse&  mouse) const
 }
 
 
-Widget*
-Widget::
-scan(const Point&  pt)
-{
-    if(content.test(pt))
-    {
-        for(auto  child: children)
-        {
-            if(child && !child->test_flag(Flag::hidden))
-            {
-              auto  res = child->scan(pt);
-
-                if(res)
-                {
-                  return res;
-                }
-            }
-        }
 
 
-      return this;
-    }
+bool   Widget::test_flag(int  f) const{return(flags&f);}
+void    Widget::set_flag(int  f){flags |=  f;}
+void  Widget::unset_flag(int  f){flags &= ~f;}
 
-
-  return nullptr;
-}
-
-
-
-
-bool   Widget::test_flag(Flag  f) const{return(flags&static_cast<int>(f));}
-void    Widget::set_flag(Flag  f){flags |=  static_cast<int>(f);}
-void  Widget::unset_flag(Flag  f){flags &= ~static_cast<int>(f);}
 
 void
 Widget::
-notify_flag(Flag  f)
+notify_flag(int  f)
 {
     if(parent && !parent->test_flag(f))
     {
@@ -146,8 +93,8 @@ void
 Widget::
 need_to_reform()
 {
-     set_flag(Flag::needed_to_reform);
-  notify_flag(Flag::needed_to_reform);
+     set_flag(needed_to_reform_flag);
+  notify_flag(needed_to_reform_flag);
 }
 
 
@@ -155,8 +102,8 @@ void
 Widget::
 need_to_redraw()
 {
-     set_flag(Flag::needed_to_redraw_self );
-  notify_flag(Flag::needed_to_redraw_child);
+     set_flag(needed_to_redraw_self_flag );
+  notify_flag(needed_to_redraw_child_flag);
 }
 
 
@@ -168,7 +115,7 @@ change_content_width(int  w)
     {
       content.width = w;
 
-      set_flag(Flag::size_is_changed);
+      set_flag(size_is_changed_flag);
 
       need_to_reform();
     }
@@ -183,43 +130,44 @@ change_content_height(int  h)
     {
       content.height = h;
 
-      set_flag(Flag::size_is_changed);
+      set_flag(size_is_changed_flag);
 
       need_to_reform();
     }
 }
 
 
+Widget*
+Widget::
+scan(const Point&  pt)
+{
+    if(content.test(pt))
+    {
+      return this;
+    }
+
+
+  return nullptr;
+}
+
+
+
+
 void
 Widget::
-update_sizes()
+redraw()
 {
-  int  w = 0;
-  int  h = 0;
-
-    for(auto  child: children)
-    {
-        if(child && !child->test_flag(Flag::hidden))
-        {
-          child->update_sizes();
-
-            if(child_count)
-            {
-              w = std::max(w,(child->relative_point.x+child->width ));
-              h = std::max(h,(child->relative_point.y+child->height));
-            }
-        }
-    }
+  render();
+}
 
 
-    if(child_count)
-    {
-      change_content_width( w);
-      change_content_height(h);
-    }
+void
+Widget::
+redraw_perfect()
+{
+  fill();
 
-
-  Box::update_sizes();
+  render();
 }
 
 
@@ -232,103 +180,47 @@ reform()
 
   update_points(parent? &parent->content.point:nullptr);
 
-    for(auto  child: children)
-    {
-        if(child && !child->test_flag(Flag::hidden) && child->test_flag(Flag::needed_to_reform))
-        {
-          child->reform();
-
-          set_flag(Flag::needed_to_redraw_child);
-        }
-    }
-
 
   update_sizes();
 
     if((get_right()  > old_right ) ||
        (get_bottom() > old_bottom))
     {
-      set_flag(Flag::needed_to_redraw_perfect);
+      set_flag(needed_to_redraw_perfect_flag);
     }
 
   else
     {
-      set_flag(Flag::needed_to_redraw_self);
+      set_flag(needed_to_redraw_self_flag);
     }
 
 
-  notify_flag(Flag::needed_to_redraw_child);
+  notify_flag(needed_to_redraw_child_flag);
 
-  unset_flag(Flag::needed_to_reform);
+  unset_flag(needed_to_reform_flag);
 }
+
+
 
 
 void
 Widget::
 try_redraw()
 {
-    if(!test_flag(Flag::hidden))
+    if(!test_flag(hidden_flag))
     {
-        if(test_flag(Flag::needed_to_redraw_perfect))
+        if(test_flag(needed_to_redraw_perfect_flag))
         {
           redraw_perfect();
         }
 
       else
-        if(test_flag(Flag::needed_to_redraw_self) ||
-           test_flag(Flag::needed_to_redraw_child))
+        if(test_flag(needed_to_redraw_self_flag) ||
+           test_flag(needed_to_redraw_child_flag))
         {
           redraw();
         }
     }
-}
-
-
-void
-Widget::
-redraw()
-{
-  render();
-
-    if(test_flag(Flag::needed_to_redraw_child))
-    {
-        for(auto  child: children)
-        {
-            if(child)
-            {
-              child->try_redraw();
-            }
-        }
-
-
-      unset_flag(Flag::needed_to_redraw_child);
-    }
-
-
-  unset_flag(Flag::needed_to_redraw_self);
-}
-
-
-void
-Widget::
-redraw_perfect()
-{
-  fill();
-
-  render();
-
-    for(auto  child: children)
-    {
-        if(child && !child->test_flag(Flag::hidden))
-        {
-          child->redraw_perfect();
-        }
-    }
-
-
-  unset_flag(Flag::needed_to_redraw_child);
-  unset_flag(Flag::needed_to_redraw_self);
-  unset_flag(Flag::needed_to_redraw_perfect);
 }
 
 

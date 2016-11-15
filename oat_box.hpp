@@ -55,6 +55,8 @@ public:
 
   const Rectangle&  get_content_rectangle() const;
 
+  const Point&  get_relative_point() const;
+
   void  change_name(const char*  s);
 
   void  update_points(const Point*  base_point=nullptr);

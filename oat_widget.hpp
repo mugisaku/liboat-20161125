@@ -22,6 +22,7 @@
 namespace oat{
 
 
+struct Container;
 
 
 class
@@ -30,38 +31,26 @@ Widget: public Box
 protected:
   uint32_t  flags;
 
-  Widget*  parent;
+  Container*  parent;
 
   void*  userdata;
 
-  int  child_count;
-
-  using WidgetList = std::list<Widget*>;
-
-  WidgetList  children;
-
-  void  try_redraw();
-
-  void  reform();
-  void  redraw();
-  void  redraw_perfect();
-
 public:
-  enum class Flag{
-    hidden                    =  1,
-    needed_to_reform          =  2,
-    needed_to_redraw_self     =  4,
-    needed_to_redraw_child    =  8,
-    needed_to_redraw_perfect  = 16,
-    size_is_changed           = 32,
-  };
+  static constexpr int  hidden_flag                    =  1;
+  static constexpr int  needed_to_reform_flag          =  2;
+  static constexpr int  needed_to_redraw_self_flag     =  4;
+  static constexpr int  needed_to_redraw_child_flag    =  8;
+  static constexpr int  needed_to_redraw_perfect_flag  = 16;
+  static constexpr int  size_is_changed_flag           = 32;
 
 
            Widget();
   virtual ~Widget();
 
 
-  Widget*  get_parent() const;
+  void  change_parent(Container&  new_parent, int  x, int  y);
+
+  Container*  get_parent() const;
 
   void   set_userdata(void*  ptr)      ;
   void*  get_userdata(          ) const;
@@ -71,44 +60,28 @@ public:
   void  change_content_width( int  w);
   void  change_content_height(int  h);
 
-  bool   test_flag(Flag  f) const;
-  void    set_flag(Flag  f);
-  void  unset_flag(Flag  f);
-  void  notify_flag(Flag  f);
-
-  Widget*&  join(Widget*  child, int  x, int  y);
-  void    rejoin(Widget&  child, int  x, int  y);
+  bool   test_flag(int  f) const;
+  void    set_flag(int  f);
+  void  unset_flag(int  f);
+  void  notify_flag(int  f);
 
   const Box&  get_box() const;
-
-  Widget*  scan(const Point&  pt);
 
   void  need_to_reform();
   void  need_to_redraw();
 
-  void  update_sizes() override;
+  void  try_redraw();
+
+  virtual Widget*  scan(const Point&  pt);
+
+  virtual void  reform();
+  virtual void  redraw();
+  virtual void  redraw_perfect();
 
   virtual void  process_mouse(const Mouse&  mouse){};
 
   virtual void  process_when_mouse_entered(){};
   virtual void  process_when_mouse_left(){};
-
-  template<typename  T>
-  void  process_children(T&  t)
-  {
-    int  i = 0;
-
-      for(auto  child: children)
-      {
-          if(child)
-          {
-            t(*child,i);
-          }
-
-
-        ++i;
-      }
-  }
 
   void  ascend_process_mouse(const Mouse&  mouse);
 
@@ -151,12 +124,37 @@ public:
 };
 
 
-template<typename  T>
-Widget*
-as_widget(T&  t)
+class
+WidgetUpdater
 {
-  return static_cast<Widget*>(t);
-}
+public:
+  using Callback = void  (*)(Widget&  w);
+
+private:
+  Widget*  target;
+
+  Callback  callback;
+
+public:
+  WidgetUpdater(Widget*  w=nullptr, Callback  cb=nullptr):
+  target(w),
+  callback(cb){}
+
+  void  operator()() const
+  {
+      if(target)
+      {
+          if(callback)
+          {
+            callback(*target);
+          }
+
+
+        target->need_to_redraw();
+      }
+  }
+
+};
 
 
 }
