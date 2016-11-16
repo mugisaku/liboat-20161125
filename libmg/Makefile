@@ -66,6 +66,7 @@ OBJ =                     \
   mg_canvas.o             \
   mg_widget__manager.o    \
   mg_widget__tool.o       \
+  mg_widget__clear.o      \
   mg_patterntable.o       \
   mg_patterndisplay.o     \
   mg_animationdisplay.o   \

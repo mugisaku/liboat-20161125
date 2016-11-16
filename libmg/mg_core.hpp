@@ -33,6 +33,8 @@ int  get_image_height();
 
 int  extend();
 
+void  clear_chip();
+
 void  move_x_offset(int  v);
 void  move_y_offset(int  v);
 

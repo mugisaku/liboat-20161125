@@ -135,6 +135,7 @@ construct_widgets()
   master.join(new TableColumn({new TableRow({colsel,motsel}),
                                new TableRow({cv,dsp}),
                                create_tool_widget(),
+                               create_clear_widget(),
                                create_manager_widget()}),0,0);
 
   master.update();

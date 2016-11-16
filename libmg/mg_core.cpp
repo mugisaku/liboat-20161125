@@ -257,6 +257,18 @@ extend()
 }
 
 
+void
+clear_chip()
+{
+    for(int  y = 0;  y < chip_height;  ++y){
+    for(int  x = 0;  x < chip_width ;  ++x){
+      put_pixel(0,x,y);
+    }}
+
+
+      cv_updater();
+  ptndsp_updater();
+}
 
 
 void
@@ -354,8 +366,14 @@ read(const char*  path)
         }
 
 
-      resize_image(png_get_image_width( png,png_info),
-                   png_get_image_height(png,png_info));
+      auto  w = png_get_image_width( png,png_info);
+      auto  h = png_get_image_height(png,png_info);
+
+        if(w < image_width ){w = image_width ;}
+        if(h < image_height){h = image_height;}
+
+
+      resize_image(w,h);
 
       png_color*  tmp_palette;
 
