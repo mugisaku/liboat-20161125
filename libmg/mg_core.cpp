@@ -20,18 +20,14 @@ oat::WidgetUpdater      cv_updater;
 oat::WidgetUpdater  colsel_updater;
 oat::WidgetUpdater  ptndsp_updater;
 oat::WidgetUpdater  anidsp_updater;
-oat::WidgetUpdater    dial_updater;
 
-
-int  image_width;
-int  image_height;
 
 int  chip_width;
 int  chip_height;
-
 int  chip_number;
 
 int  color_index;
+
 
 int  color_type;
 
@@ -40,16 +36,19 @@ int  depth;
 std::vector<png_color>  palette;
 
 int  tool_index;
+int  chip_index;
 
 
-std::vector<uint8_t>  pixels;
+std::vector<uint8_t>
+copy_buffer;
 
 
-int  x_offset;
-int  y_offset;
+uint8_t
+pixels[image_size][image_size];
 
 
-
+Frame
+frame;
 
 
 
@@ -80,16 +79,6 @@ search(int  color_index_, int  target, int  x, int  y)
 }
 
 
-
-
-void
-resize_image(int  w, int  h)
-{
-  image_width  = w;
-  image_height = h;
-
-  pixels.resize(w*h);
-}
 
 
 void
@@ -149,12 +138,12 @@ set_parameter(int  chip_width_, int  chip_height_, int  chip_number_)
   chip_height = chip_height_;
   chip_number = chip_number_;
 
-  x_offset = 0;
-  y_offset = 0;
+  frame.x = 0;
+  frame.y = 0;
+  frame.w = chip_width*chip_number;
+  frame.h = chip_height;
 
   reset_palette();
-
-  resize_image(chip_width*chip_number,chip_height);
 }
 
 
@@ -162,62 +151,40 @@ void  set_canvas_updater(oat::WidgetUpdater  upd){cv_updater = upd;}
 void  set_colorselector_updater(oat::WidgetUpdater  upd){colsel_updater = upd;}
 void  set_patterndisplay_updater(oat::WidgetUpdater  upd){ptndsp_updater = upd;}
 void  set_animationdisplay_updater(oat::WidgetUpdater  upd){anidsp_updater = upd;}
-void  set_dial_updater(oat::WidgetUpdater  upd){dial_updater = upd;}
 
 
 
 
-int  get_image_width(){return image_width;}
-int  get_image_height(){return image_height;}
+void
+change_chip_index(int  v)
+{
+  chip_index = v;
+}
+
 
 int  get_chip_width(){return chip_width;}
 int  get_chip_height(){return chip_height;}
+int  get_chip_index(){return chip_index;}
 int  get_chip_number(){return chip_number;}
 
 
 
 
-namespace{
-int
-clamp(int  v, int  max, int  min)
+const Frame&
+get_frame()
 {
-  return((v <= min)?   0:
-         (v >= max)? max:v);
-}
+  return frame;
 }
 
 
 void
-move_x_offset(int  v)
+change_frame_point(const oat::Point&  pt)
 {
-  x_offset = clamp(chip_width*v,image_width-chip_width,0);
+  frame.x = pt.x;
+  frame.y = pt.y;
 
    cv_updater();
   ptndsp_updater();
-}
-
-
-void
-move_y_offset(int  v)
-{
-  y_offset = clamp(chip_height*v,image_height-chip_height,0);
-
-   cv_updater();
-  ptndsp_updater();
-}
-
-
-int
-get_x_offset()
-{
-  return x_offset;
-}
-
-
-int
-get_y_offset()
-{
-  return y_offset;
 }
 
 
@@ -245,15 +212,34 @@ get_color_index()
 
 
 
-int
-extend()
+void
+copy_chip()
 {
-  image_height += chip_height;
+  copy_buffer.clear();
 
-  pixels.resize(image_width*image_height);
+    for(int  y = 0;  y < chip_height;  ++y){
+    for(int  x = 0;  x < chip_width ;  ++x){
+      copy_buffer.emplace_back(get_chip_pixel(x,y));
+    }}
+}
 
 
-  return (image_height/chip_height);
+void
+paste_chip()
+{
+    if(copy_buffer.size())
+    {
+      auto  it = copy_buffer.cbegin();
+
+        for(int  y = 0;  y < chip_height;  ++y){
+        for(int  x = 0;  x < chip_width ;  ++x){
+          put_pixel(*it++,x,y);
+        }}
+
+
+          cv_updater();
+      ptndsp_updater();
+    }
 }
 
 
@@ -269,6 +255,8 @@ clear_chip()
       cv_updater();
   ptndsp_updater();
 }
+
+
 
 
 void
@@ -309,7 +297,7 @@ fill_area(int  color_index_, int  x, int  y)
 void
 put_pixel(int  color_index_, int  x, int  y)
 {
-  pixels[(image_width*(y_offset+y))+x_offset+x] = color_index_;
+  pixels[frame.y+y][frame.x+(chip_width*chip_index)+x] = color_index_;
 
    cv_updater();
   ptndsp_updater();
@@ -319,21 +307,21 @@ put_pixel(int  color_index_, int  x, int  y)
 int
 get_image_pixel(int  x, int  y)
 {
-  return pixels[(image_width*y)+x];
+  return pixels[y][x];
 }
 
 
 int
 get_chip_pixel(int  x, int  y)
 {
-  return get_image_pixel(x_offset+x,y_offset+y);
+  return get_image_pixel(frame.x+(chip_width*chip_index)+x,frame.y+y);
 }
 
 
 int
-get_segment_pixel(int  x, int  y)
+get_frame_pixel(int  x, int  y)
 {
-  return get_image_pixel(x,y_offset+y);
+  return get_image_pixel(frame.x+x,frame.y+y);
 }
 
 
@@ -369,11 +357,9 @@ read(const char*  path)
       auto  w = png_get_image_width( png,png_info);
       auto  h = png_get_image_height(png,png_info);
 
-        if(w < image_width ){w = image_width ;}
-        if(h < image_height){h = image_height;}
+        if(w > image_size){w = image_size;}
+        if(h > image_size){h = image_size;}
 
-
-      resize_image(w,h);
 
       png_color*  tmp_palette;
 
@@ -391,9 +377,9 @@ read(const char*  path)
 
       png_set_packing(png);
 
-        for(int  y = 0;  y < image_height;  ++y)
+        for(int  y = 0;  y < h;  ++y)
         {
-          png_read_row(png,&pixels[image_width*y],nullptr);
+          png_read_row(png,pixels[y],nullptr);
         }
 
 
@@ -404,7 +390,6 @@ read(const char*  path)
 
        cv_updater();
   ptndsp_updater();
-      dial_updater();
 	   }
 }
 
@@ -425,7 +410,7 @@ write(const char*  path)
 
       png_set_compression_level(png,Z_BEST_COMPRESSION);
 
-      png_set_IHDR(png,png_info,image_width,image_height,4,
+      png_set_IHDR(png,png_info,image_size,image_size,4,
                    PNG_COLOR_TYPE_PALETTE,
                    PNG_INTERLACE_NONE,
                    PNG_COMPRESSION_TYPE_DEFAULT,
@@ -437,9 +422,9 @@ write(const char*  path)
 
       png_set_packing(png);
 
-        for(int  y = 0;  y < image_height;  ++y)
+        for(int  y = 0;  y < image_size;  ++y)
         {
-          png_write_row(png,&pixels[image_width*y]);
+          png_write_row(png,pixels[y]);
         }
 
 

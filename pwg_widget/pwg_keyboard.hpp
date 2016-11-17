@@ -18,7 +18,7 @@ struct Monitor;
 
 
 class
-Keyboard: public oat::Widget
+Keyboard: public oat::Container
 {
   KeyRow      sine_keyrow;
   KeyRow    square_keyrow;

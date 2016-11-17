@@ -10,6 +10,8 @@
 class
 PatternDisplay: public oat::Widget
 {
+  oat::Point  cursor;
+
 public:
   PatternDisplay();
 

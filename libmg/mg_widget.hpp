@@ -10,7 +10,7 @@
 
 oat::Widget*  create_manager_widget();
 oat::Widget*  create_tool_widget();
-oat::Widget*  create_clear_widget();
+oat::Widget*  create_edit_widget();
 
 
 #endif

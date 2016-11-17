@@ -22,14 +22,10 @@ public:
 protected:
   ButtonModule  module;
 
-  Widget**  icon_ptr;
-  Widget**  text_ptr;
-
   Callback  callback;
 
 public:
-  Button(Text*  text=nullptr);
-  Button(Icon*  icon, Text*  text=nullptr);
+  Button(Widget*  child=nullptr);
 
 
         ButtonModule&  get_module()            ;
@@ -37,8 +33,7 @@ public:
 
   const ButtonModule*  operator->() const;
 
-  void  change_icon(Icon*  icon);
-  void  change_text(Text*  text);
+  void  change_child(Widget*  child);
 
   void    press();
   void  unpress();

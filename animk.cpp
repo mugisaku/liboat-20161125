@@ -4,6 +4,7 @@
 #include"libmg/mg_colorselector.hpp"
 #include"libmg/mg_motionselector.hpp"
 #include"libmg/mg_animationdisplay.hpp"
+#include"libmg/mg_framepositioner.hpp"
 #include"libmg/mg_canvas.hpp"
 #include"libmg/mg_widget.hpp"
 
@@ -128,14 +129,15 @@ construct_widgets()
   auto  colsel = new ColorSelector;
   auto  motsel = new MotionSelector;
 
+  auto  anitbl = new TableColumn({motsel,dsp});
+
   core::set_canvas_updater(cv);
   core::set_animationdisplay_updater(dsp);
   core::set_colorselector_updater(colsel);
 
-  master.join(new TableColumn({new TableRow({colsel,motsel}),
-                               new TableRow({cv,dsp}),
-                               create_tool_widget(),
-                               create_clear_widget(),
+  master.join(new TableColumn({new TableRow({colsel}),
+                               new TableRow({cv,anitbl,new FramePositioner}),
+                               new TableRow({create_tool_widget(),create_edit_widget()}),
                                create_manager_widget()}),0,0);
 
   master.update();

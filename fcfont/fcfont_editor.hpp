@@ -20,7 +20,7 @@ struct Sample;
 
 
 class
-Editor: public Widget
+Editor: public Container
 {
   CharacterSelector*  chr_selector;
   CharacterEditor*      chr_editor;

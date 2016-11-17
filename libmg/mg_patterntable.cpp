@@ -10,7 +10,7 @@ namespace pattern_table{
 namespace{
 
 
-int
+oat::Point
 data[size][size];
 
 
@@ -20,11 +20,11 @@ data[size][size];
 void
 change(int  x, int  y)
 {
-  data[y][x] = core::get_y_offset();
+  data[y][x].reset(core::get_frame().x,core::get_frame().y);
 }
 
 
-int
+const oat::Point&
 get(int  x, int  y)
 {
   return data[y][x];

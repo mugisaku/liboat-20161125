@@ -3,6 +3,7 @@
 
 
 #include"mg_core.hpp"
+#include"oat.hpp"
 
 
 
@@ -13,8 +14,8 @@ namespace pattern_table{
 constexpr int  size = 3;
 
 
-void  change(int  x, int  y);
-int      get(int  x, int  y);
+void                change(int  x, int  y);
+const oat::Point&      get(int  x, int  y);
 
 
 }

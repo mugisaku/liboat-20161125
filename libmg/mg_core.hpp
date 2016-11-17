@@ -8,7 +8,23 @@
 
 
 
+struct
+Frame
+{
+  int  x;
+  int  y;
+  int  w;
+  int  h;
+
+};
+
+
+
+
 namespace core{
+
+
+constexpr int  image_size = 256;
 
 
 void  set_parameter(int  chip_width_, int  chip_height_, int  chip_number_);
@@ -17,30 +33,27 @@ void  set_canvas_updater(oat::WidgetUpdater  upd);
 void  set_colorselector_updater(oat::WidgetUpdater  upd);
 void  set_patterndisplay_updater(oat::WidgetUpdater  upd);
 void  set_animationdisplay_updater(oat::WidgetUpdater  upd);
-void  set_dial_updater(oat::WidgetUpdater  upd);
 
 
 void  change_tool_index(int  v);
 int  get_tool_index();
 
 
+void  change_chip_index(int  v);
+
 int  get_chip_width();
 int  get_chip_height();
+int  get_chip_index();
 int  get_chip_number();
 
-int  get_image_width();
-int  get_image_height();
 
-int  extend();
-
+void   copy_chip();
+void  paste_chip();
 void  clear_chip();
 
-void  move_x_offset(int  v);
-void  move_y_offset(int  v);
+const Frame&  get_frame();
 
-
-int  get_x_offset();
-int  get_y_offset();
+void  change_frame_point(const oat::Point&  pt);
 
 
 void  change_color_index(int  v);
@@ -53,7 +66,8 @@ void     fill_area(int  color_index_, int  x, int  y);
 void     put_pixel(int  color_index_, int  x, int  y);
 int  get_image_pixel(int  x, int  y);
 int  get_chip_pixel(int  x, int  y);
-int  get_segment_pixel(int  x, int  y);
+int  get_frame_pixel(int  x, int  y);
+
 
 void   read(const char*  path);
 void  write(const char*  path);

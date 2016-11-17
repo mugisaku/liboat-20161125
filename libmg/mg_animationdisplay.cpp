@@ -56,7 +56,7 @@ render()
 
     for(int  y = 0;  y < core::get_chip_height();  y += 1){
     for(int  x = 0;  x < core::get_chip_width() ;  x += 1){
-      auto  v = core::get_segment_pixel(x_base+x,y);
+      auto  v = core::get_frame_pixel(x_base+x,y);
 
         if(v&8)
         {

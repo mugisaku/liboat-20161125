@@ -3,6 +3,7 @@
 #include"libmg/mg_core.hpp"
 #include"libmg/mg_colorselector.hpp"
 #include"libmg/mg_patterndisplay.hpp"
+#include"libmg/mg_framepositioner.hpp"
 #include"libmg/mg_canvas.hpp"
 #include"libmg/mg_widget.hpp"
 
@@ -127,9 +128,8 @@ construct_widgets()
   core::set_colorselector_updater(colsel);
 
   master.join(new TableColumn({colsel,
-                               new TableRow({cv,dsp}),
-                               create_tool_widget(),
-                               create_clear_widget(),
+                               new TableRow({cv,dsp,new FramePositioner}),
+                               new TableRow({create_tool_widget(),create_edit_widget()}),
                                create_manager_widget()}),0,0);
 
   master.update();

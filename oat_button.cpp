@@ -11,37 +11,15 @@ namespace oat{
 
 
 Button::
-Button(Text*  text):
+Button(Widget*  child):
 callback(nullptr)
 {
-  children.emplace_back(nullptr);
-  icon_ptr = &children.back();
+  style.top_margin    = 4;
+  style.left_margin   = 4;
+  style.right_margin  = 4;
+  style.bottom_margin = 4;
 
-  children.emplace_back(nullptr);
-  text_ptr = &children.back();
-
-  change_content_width( font::width );
-  change_content_height(font::height);
-
-  change_text(text);
-}
-
-
-Button::
-Button(Icon*  icon, Text*  text):
-callback(nullptr)
-{
-  children.emplace_back(nullptr);
-  icon_ptr = &children.back();
-
-  children.emplace_back(nullptr);
-  text_ptr = &children.back();
-
-  change_content_width( font::width );
-  change_content_height(font::height);
-
-  change_icon(icon);
-  change_text(text);
+  change_child(child);
 }
 
 
@@ -73,65 +51,20 @@ get_const_module() const
 
 void
 Button::
-change_icon(Icon*  icon)
+change_child(Widget*  child)
 {
-  delete *icon_ptr       ;
-         *icon_ptr = icon;
-
-    if(icon)
+    if(children.size())
     {
-      icon->update_sizes();
+      delete children.front();
 
-      change_content_width( icon->width +4);
-      change_content_height(icon->height+4);
-
-      rejoin(*icon,2,2);
-
-      need_to_reform();
-      need_to_redraw();
+      children.clear();
     }
-}
 
 
-void
-Button::
-change_text(Text*  text)
-{
-  delete *text_ptr       ;
-         *text_ptr = text;
+  join(child,0,0);
 
-    if(text)
-    {
-      auto  icon = *icon_ptr;
-
-      int  w = 0;
-      int  h = 0;
-
-        if(icon)
-        {
-          icon->update_sizes();
-
-          w = icon->width ;
-          h = icon->height;
-        }
-
-
-      text->update_sizes();
-
-      w = std::max(w,text->width );
-      h = std::max(h,text->height);
-
-      w += 8;
-      h += 8;
-
-      change_content_width( w);
-      change_content_height(h);
-
-      rejoin(*text,icon? icon->width+4:4,4);
-
-      need_to_reform();
-      need_to_redraw();
-    }
+  need_to_reform();
+  need_to_redraw();
 }
 
 
@@ -208,18 +141,10 @@ void
 Button::
 render()
 {
-  auto  pt = content.point;
+    if(module.test_pressing()){draw_concave_rect(style.background_color,point.x,point.y,width-2,height-2);}
+  else                        {draw_convex_rect( style.background_color,point.x,point.y,width-2,height-2);}
 
-    if(module.test_pressing()){draw_concave_rect(style.background_color,pt.x,pt.y,content.width,content.height);}
-  else                        {draw_convex_rect( style.background_color,pt.x,pt.y,content.width,content.height);}
-
-    for(auto  child: children)
-    {
-        if(child)
-        {
-          child->render();
-        }
-    }
+  Container::render();
 }
 
 

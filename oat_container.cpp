@@ -33,14 +33,6 @@ join(Widget*  child, int  x, int  y)
 }
 
 
-void
-Container::
-rejoin(Widget&  child, int  x, int  y)
-{
-  child.change_parent(*this,x,y);
-}
-
-
 
 
 Widget*

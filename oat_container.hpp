@@ -26,9 +26,7 @@ public:
   ~Container() override;
 
 
-  void    join(Widget*  child, int  x, int  y);
-  void  rejoin(Widget&  child, int  x, int  y);
-
+  void  join(Widget*  child, int  x, int  y);
 
   void  update_sizes() override;
 

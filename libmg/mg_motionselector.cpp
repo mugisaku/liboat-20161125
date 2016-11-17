@@ -28,7 +28,7 @@ process_mouse(const Mouse&  mouse)
 
     if(mouse.left.test_pressing())
     {
-      core::move_x_offset(pt.x/core::get_chip_width());
+      core::change_chip_index(pt.x/core::get_chip_width());
     }
 }
 
@@ -42,9 +42,11 @@ render()
 
   auto  pt = content.point;
 
+  auto  w = core::get_chip_width()*core::get_chip_number();
+
     for(int  y = 0;  y < core::get_chip_height();  ++y){
-    for(int  x = 0;  x < core::get_image_width();  ++x){
-      auto  v = core::get_segment_pixel(x,y);
+    for(int  x = 0;  x < w;                        ++x){
+      auto  v = core::get_frame_pixel(x,y);
 
         if(v&8)
         {
@@ -53,7 +55,7 @@ render()
     }}
 
 
-  auto  x_base = core::get_x_offset();
+  auto  x_base = core::get_chip_width()*core::get_chip_index();
 
   draw_rect(const_color::white,pt.x+x_base,
                                pt.y,core::get_chip_width(),core::get_chip_height());
