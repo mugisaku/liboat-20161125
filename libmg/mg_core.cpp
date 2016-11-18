@@ -39,10 +39,6 @@ int  tool_index;
 int  chip_index;
 
 
-std::vector<uint8_t>
-copy_buffer;
-
-
 uint8_t
 pixels[image_size][image_size];
 
@@ -153,6 +149,14 @@ void  set_patterndisplay_updater(oat::WidgetUpdater  upd){ptndsp_updater = upd;}
 void  set_animationdisplay_updater(oat::WidgetUpdater  upd){anidsp_updater = upd;}
 
 
+void
+update_because_of_image_changed()
+{
+   cv_updater();
+  ptndsp_updater();
+}
+
+
 
 
 void
@@ -207,53 +211,6 @@ int
 get_color_index()
 {
   return color_index;
-}
-
-
-
-
-void
-copy_chip()
-{
-  copy_buffer.clear();
-
-    for(int  y = 0;  y < chip_height;  ++y){
-    for(int  x = 0;  x < chip_width ;  ++x){
-      copy_buffer.emplace_back(get_chip_pixel(x,y));
-    }}
-}
-
-
-void
-paste_chip()
-{
-    if(copy_buffer.size())
-    {
-      auto  it = copy_buffer.cbegin();
-
-        for(int  y = 0;  y < chip_height;  ++y){
-        for(int  x = 0;  x < chip_width ;  ++x){
-          put_pixel(*it++,x,y);
-        }}
-
-
-          cv_updater();
-      ptndsp_updater();
-    }
-}
-
-
-void
-clear_chip()
-{
-    for(int  y = 0;  y < chip_height;  ++y){
-    for(int  x = 0;  x < chip_width ;  ++x){
-      put_pixel(0,x,y);
-    }}
-
-
-      cv_updater();
-  ptndsp_updater();
 }
 
 

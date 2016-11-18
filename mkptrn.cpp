@@ -117,7 +117,7 @@ construct_widgets()
   default_style.bottom_padding = 2;
 
 
-  core::set_parameter(16,16,1);
+  core::set_parameter(24,24,1);
 
   auto      cv = new Canvas;
   auto     dsp = new PatternDisplay;

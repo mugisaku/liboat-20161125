@@ -34,6 +34,8 @@ void  set_colorselector_updater(oat::WidgetUpdater  upd);
 void  set_patterndisplay_updater(oat::WidgetUpdater  upd);
 void  set_animationdisplay_updater(oat::WidgetUpdater  upd);
 
+void  update_because_of_image_changed();
+
 
 void  change_tool_index(int  v);
 int  get_tool_index();
@@ -49,6 +51,12 @@ int  get_chip_number();
 
 void   copy_chip();
 void  paste_chip();
+void  reverse_chip_horizontally();
+void  reverse_chip_vertically();
+void  shift_chip_up();
+void  shift_chip_left();
+void  shift_chip_right();
+void  shift_chip_down();
 void  clear_chip();
 
 const Frame&  get_frame();

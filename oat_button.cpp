@@ -11,8 +11,8 @@ namespace oat{
 
 
 Button::
-Button(Widget*  child):
-callback(nullptr)
+Button(Widget*  child, Callback  cb):
+callback(cb)
 {
   style.top_margin    = 4;
   style.left_margin   = 4;

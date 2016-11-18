@@ -31,6 +31,14 @@ void
 Widget::
 change_parent(Container&  new_parent, int  x, int  y)
 {
+    if(parent)
+    {
+      printf("すでに親ウィジェットが設定されています\n");
+
+      throw;
+    }
+
+
   parent = &new_parent;
 
   relative_point.reset(x,y);

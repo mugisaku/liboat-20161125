@@ -25,7 +25,7 @@ protected:
   Callback  callback;
 
 public:
-  Button(Widget*  child=nullptr);
+  Button(Widget*  child=nullptr, Callback  cb=nullptr);
 
 
         ButtonModule&  get_module()            ;
