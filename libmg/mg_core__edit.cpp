@@ -56,7 +56,12 @@ paste_chip()
 
         for(int  y = 0;  y < get_chip_height();  ++y){
         for(int  x = 0;  x < get_chip_width() ;  ++x){
-          put_pixel(*it++,x,y);
+          auto  v = *it++;
+
+            if(v&8)
+            {
+              put_pixel(v,x,y);
+            }
         }}
 
 
@@ -89,6 +94,24 @@ reverse_chip_vertically()
     for(int  x = get_chip_width()-1;  x >=          0;  --x){
       put_pixel(*it++,x,y);
     }}
+
+
+  update_because_of_image_changed();
+}
+
+
+void
+mirror_chip_vertically()
+{
+    for(int  y = 0;  y < get_chip_height();  ++y)
+    {
+        for(int  x = 0;  x < get_chip_width()/2;  ++x)
+        {
+          auto  v = get_chip_pixel(x,y);
+
+          put_pixel(v,get_chip_width()-1-x,y);
+        }
+    }
 
 
   update_because_of_image_changed();

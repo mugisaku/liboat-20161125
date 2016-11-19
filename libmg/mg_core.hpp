@@ -24,7 +24,7 @@ Frame
 namespace core{
 
 
-constexpr int  image_size = 256;
+constexpr int  image_size = 384;
 
 
 void  set_parameter(int  chip_width_, int  chip_height_, int  chip_number_);
@@ -53,6 +53,7 @@ void   copy_chip();
 void  paste_chip();
 void  reverse_chip_horizontally();
 void  reverse_chip_vertically();
+void  mirror_chip_vertically();
 void  shift_chip_up();
 void  shift_chip_left();
 void  shift_chip_right();
