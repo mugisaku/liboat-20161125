@@ -33,7 +33,7 @@ check(uint32_t  now)
 
       phase += 1;
 
-        if(phase >= core::get_chip_number())
+        if(phase >= 4)
         {
           phase = 0;
         }
@@ -52,7 +52,9 @@ render()
 
   auto  pt = content.point;
 
-  int  x_base = core::get_chip_width()*phase;
+  static int  bases[] = {0,1,0,2};
+
+  int  x_base = core::get_chip_width()*bases[phase];
 
     for(int  y = 0;  y < core::get_chip_height();  y += 1){
     for(int  x = 0;  x < core::get_chip_width() ;  x += 1){

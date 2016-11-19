@@ -48,7 +48,7 @@ copy_chip()
 
 
 void
-paste_chip()
+paste_chip(bool  overwrite)
 {
     if(copy_buffer.size())
     {
@@ -58,7 +58,7 @@ paste_chip()
         for(int  x = 0;  x < get_chip_width() ;  ++x){
           auto  v = *it++;
 
-            if(v&8)
+            if(overwrite || (v&8))
             {
               put_pixel(v,x,y);
             }

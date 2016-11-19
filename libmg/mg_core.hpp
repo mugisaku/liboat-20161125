@@ -50,7 +50,7 @@ int  get_chip_number();
 
 
 void   copy_chip();
-void  paste_chip();
+void  paste_chip(bool  overwrite);
 void  reverse_chip_horizontally();
 void  reverse_chip_vertically();
 void  mirror_chip_vertically();
