@@ -123,9 +123,9 @@ draw_character(const Character&  c, Widget*  wid, int  x_base, int  y_base)
 
         for(int  xx = 0;  xx < 8;  ++xx)
         {
-          wid->draw_dot(Character::color_table[code>>14],x_base+xx,y_base+yy);
+          wid->draw_dot((code&0x80)? const_color::white:const_color::black,x_base+xx,y_base+yy);
 
-          code <<= 2;
+          code <<= 1;
         }
     }
 }

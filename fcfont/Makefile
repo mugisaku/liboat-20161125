@@ -60,7 +60,6 @@ OBJ =                         \
   fcfont.o                    \
   fcfont_sample.o             \
   fcfont_characterselector.o  \
-  fcfont_colorselector.o      \
   fcfont_charactereditor.o    \
   fcfont_combinedselector.o   \
   fcfont_editor.o             \

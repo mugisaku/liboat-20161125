@@ -5,7 +5,6 @@
 #include<cstdint>
 #include<cstdio>
 #include<string>
-#include"oat_color.hpp"
 
 
 namespace fcfont{
@@ -18,7 +17,7 @@ Character
 
   char16_t  unicode;
 
-  uint16_t  data[size];
+  uint8_t  data[size];
 
   static Character*  embedded_table;
 
@@ -28,8 +27,6 @@ Character
 
   static void  reset_table();
   static void  print_table(FILE*  f=stdout);
-
-  static oat::Color  color_table[4];
 
 };
 

@@ -1,7 +1,6 @@
 #include"fcfont_charactereditor.hpp"
 #include"fcfont_characterselector.hpp"
 #include"fcfont_combinedselector.hpp"
-#include"fcfont_colorselector.hpp"
 
 
 using namespace oat;
@@ -38,8 +37,8 @@ process_mouse(const Mouse&  mouse)
 
     if(mouse.left.test_pressing())
     {
-      target &= ~((           3<<14)>>(cursor.x<<1));
-      target |=  ((colsel.get()<<14)>>(cursor.x<<1));
+      target &= ~(0x80>>cursor.x);
+      target |=  (0x80>>cursor.x);
 
       chrsel.need_to_redraw();
       cmbsel.need_to_redraw();
@@ -48,7 +47,7 @@ process_mouse(const Mouse&  mouse)
   else
     if(mouse.right.test_pressing())
     {
-      target &= ~((           3<<14)>>(cursor.x<<1));
+      target &= ~(0x80>>cursor.x);
 
       chrsel.need_to_redraw();
       cmbsel.need_to_redraw();
@@ -75,9 +74,12 @@ render()
 
         for(int  x = 0;  x < Character::size;  ++x)
         {
-          fill_rect(Character::color_table[(code>>14)&3],pt.x+(pixel_size*x),pt.y+(pixel_size*y),pixel_size,pixel_size);
+          constexpr auto  white = const_color::white;
+          constexpr auto  black = const_color::black;
 
-          code <<= 2;
+          fill_rect((code&0x80)? white:black,pt.x+(pixel_size*x),pt.y+(pixel_size*y),pixel_size,pixel_size);
+
+          code <<= 1;
         }
     }
 }

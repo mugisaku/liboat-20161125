@@ -173,11 +173,6 @@ main(int  argc,  char**  argv)
   fcfont::Character::reset_table();
   fcfont::Combined::reset_table();
 
-  fcfont::Character::color_table[0] = oat::Color(0x00,0x00,0x00);
-  fcfont::Character::color_table[1] = oat::Color(0xFF,0xFF,0xFF);
-  fcfont::Character::color_table[2] = oat::Color(0x7F,0x7F,0x7F);
-  fcfont::Character::color_table[3] = oat::Color(0x00,0x00,0xFF);
-
   construct_widgets();
 
   SDL_Init(SDL_INIT_VIDEO);

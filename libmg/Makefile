@@ -37,7 +37,7 @@ endif
 
 ifeq ($(emcc),1)
   CXX      = CCACHE_DIR=/tmp/ccachedir ccache emcc
-  CXXFLAGS = -std=gnu++11 -I. -Werror -Wno-unused-result -Os -s USE_SDL=2
+  CXXFLAGS = -std=gnu++11 -I. -I.. -Werror -Wno-unused-result -Os -s USE_SDL=2
   EXE_EXT  = .html
   LDFLAGS  = 
 else ifeq ($(ccache),1)
