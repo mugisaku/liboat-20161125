@@ -188,11 +188,20 @@ main_loop()
     }
 
 
-    if(master.update() || modified)
-    {
-      update_screen();
+  static uint32_t  next_time;
 
-      modified = 0;
+  auto  now = SDL_GetTicks();
+
+    if(now >= next_time)
+    {
+      next_time = now+120;
+
+        if(master.update() || modified)
+        {
+          update_screen();
+
+          modified = 0;
+        }
     }
 }
 

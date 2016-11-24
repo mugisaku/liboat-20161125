@@ -122,7 +122,7 @@ construct_widgets()
   default_style.bottom_padding = 2;
 
 
-  core::set_parameter(24,48,3);
+  core::set_parameter(24,40,3);
 
   auto      cv = new Canvas(true);
            dsp = new AnimationDisplay;
@@ -195,13 +195,22 @@ main_loop()
     }
 
 
-  dsp->check(SDL_GetTicks());
+  auto  now = SDL_GetTicks();
 
-    if(master.update() || modified)
+  dsp->check(now);
+
+  static uint32_t  next_time;
+
+    if(now >= next_time)
     {
-      update_screen();
+      next_time = now+120;
 
-      modified = 0;
+        if(master.update() || modified)
+        {
+          update_screen();
+
+          modified = 0;
+        }
     }
 }
 
