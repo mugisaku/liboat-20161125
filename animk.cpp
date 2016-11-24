@@ -122,7 +122,7 @@ construct_widgets()
   default_style.bottom_padding = 2;
 
 
-  core::set_parameter(24,32,3);
+  core::set_parameter(24,48,3);
 
   auto      cv = new Canvas(true);
            dsp = new AnimationDisplay;
@@ -135,10 +135,9 @@ construct_widgets()
   core::set_animationdisplay_updater(dsp);
   core::set_colorselector_updater(colsel);
 
-  master.join(new TableColumn({new TableRow({colsel}),
-                               new TableRow({cv,anitbl,new FramePositioner}),
-                               new TableRow({create_tool_widget(),create_edit_widget()}),
-                               create_manager_widget()}),0,0);
+  master.join(new TableColumn({new TableRow({cv,anitbl,new FramePositioner}),
+                               new TableRow({colsel,create_tool_widget(),create_edit_widget(),create_manager_widget()}),
+                              }),0,0);
 
   master.update();
 }

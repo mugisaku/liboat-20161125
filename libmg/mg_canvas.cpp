@@ -72,9 +72,12 @@ render()
   constexpr oat::Color  l1(0x7F,0x7F,0x0);
   constexpr oat::Color  l2(0xFF,0xFF,0x00);
 
-    for(int  y = 0;  y < core::get_chip_height();  y += 1)
+  const int  w = core::get_chip_width();
+  const int  h = core::get_chip_height();
+
+    for(int  y = 0;  y < h;  y += 1)
     {
-        for(int  x = 0;  x < core::get_chip_width();  x += 1)
+        for(int  x = 0;  x < w;  x += 1)
         {
           auto  v = core::get_chip_pixel(x,y);
 
@@ -87,23 +90,23 @@ render()
 
           draw_vline(l1,pt.x+pixel_size*x,
                         pt.y,
-                        pixel_size*core::get_chip_height());
+                        pixel_size*h);
         }
 
 
       draw_hline(l1,pt.x,
                     pt.y+pixel_size*y,
-                    pixel_size*core::get_chip_width());
+                    pixel_size*w);
     }
 
 
   draw_hline(l2,pt.x,
-                pt.y+pixel_size*(core::get_chip_height()/2)+1,
-                pixel_size*core::get_chip_width());
+                pt.y+pixel_size*(h/2)+1,
+                pixel_size*w);
 
-  draw_vline(l2,pt.x+pixel_size*(core::get_chip_width()/2)+1,
+  draw_vline(l2,pt.x+pixel_size*(w/2)+1,
                 pt.y,
-                pixel_size*core::get_chip_height());
+                pixel_size*h);
 
 
 
@@ -111,16 +114,8 @@ render()
     {
       draw_rect(l2,pt.x+pixel_size*4+1,
                    pt.y+pixel_size*4+1,
-                   pixel_size*16,
-                   pixel_size*24);
-
-      draw_hline(l2,pt.x+pixel_size* 4+1,
-                    pt.y+pixel_size*12+1,
-                    pixel_size*16);
-
-      draw_hline(l2,pt.x+pixel_size* 4+1,
-                    pt.y+pixel_size*20+1,
-                    pixel_size*16);
+                   pixel_size*(w-8),
+                   pixel_size*(h-8));
     }
 }
 
