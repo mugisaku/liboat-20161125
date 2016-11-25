@@ -13,13 +13,7 @@ save(Button&  btn)
 {
     if(btn->test_unpressed())
     {
-      static int  n;
-
-      char  buf[256];
-
-      snprintf(buf,sizeof(buf),"__PTRN%03d.png",n++);
-
-      core::write(buf);
+      core::write();
     }
 }
 

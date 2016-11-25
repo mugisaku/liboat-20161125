@@ -143,10 +143,23 @@ construct_widgets()
 }
 
 
+const char*
+get_title()
+{
+  static char  buf[256];
+
+  snprintf(buf,sizeof(buf),"%s - animk " __DATE__,core::get_filepath());
+
+  return buf;
+}
+
+
 void
 load(char*  path)
 {
   core::read(path);
+
+  screen.change_title(get_title());
 
   SDL_free(path);
 }
@@ -224,7 +237,7 @@ main(int  argc,  char**  argv)
 
   auto&  m = oat::master.get_module();
 
-  screen.create("mkptrn - " __DATE__,m.get_width(),m.get_height());
+  screen.create(get_title(),m.get_width(),m.get_height());
 
   update_screen();
 

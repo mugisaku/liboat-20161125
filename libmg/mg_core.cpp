@@ -284,12 +284,62 @@ get_frame_pixel(int  x, int  y)
 
 
 
+namespace{
+std::string
+png_path("__output.png");
+
+
+bool
+test_png(FILE*  f)
+{
+  constexpr uint8_t
+  png_signature[16] =
+  {
+    0x89,0x50,0x4E,0x47,0x0D,0x0A,0x1A,0x0A,
+    0x00,0x00,0x00,0x0D,0x49,0x48,0x44,0x52
+  };
+
+
+
+  fpos_t  pos;
+
+  fgetpos(f,&pos);
+
+    for(int  i = 0;  i < 16;  i += 1)
+    {
+      auto  c = fgetc(f);
+
+        if(ferror(f) || feof(f) || (c != png_signature[i]))
+        {
+          return false;
+        }
+    }
+
+
+  fsetpos(f,&pos);
+
+  return true;
+}
+
+
+}
+
+
+const char*
+get_filepath()
+{
+  auto  res = png_path.rfind('/');
+
+  return (res == std::string::npos)? png_path.data():&png_path[res+1];
+}
+
+
 void
 read(const char*  path)
 {
   auto  f = fopen(path,"rb");
 
-    if(f)
+    if(f && test_png(f))
     {
       png_structp  png = png_create_read_struct(PNG_LIBPNG_VER_STRING,nullptr,nullptr,nullptr);
       png_infop    png_info = png_create_info_struct(png);
@@ -342,6 +392,7 @@ read(const char*  path)
 
       close_read(png,png_info,f);
 
+      png_path = path;
 
       reset_palette();
 
@@ -353,9 +404,9 @@ read(const char*  path)
 
 
 void
-write(const char*  path)
+write()
 {
-  auto  f = fopen(path,"wb");
+  auto  f = fopen(png_path.data(),"wb");
 
     if(f)
     {
@@ -386,7 +437,7 @@ write(const char*  path)
 
 
       close_write(png,png_info,f);
-	   }
+    }
 }
 
 

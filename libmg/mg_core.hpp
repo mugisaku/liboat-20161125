@@ -78,8 +78,10 @@ int  get_chip_pixel(int  x, int  y);
 int  get_frame_pixel(int  x, int  y);
 
 
+const char*  get_filepath();
+
 void   read(const char*  path);
-void  write(const char*  path);
+void  write();
 
 
 }

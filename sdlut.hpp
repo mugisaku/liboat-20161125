@@ -165,6 +165,11 @@ public:
     SDL_DestroyWindow(window);
   }
 
+  void  change_title(const char*  s)
+  {
+    SDL_SetWindowTitle(window,s);
+  }
+
   void  change_fullscreen()
   {
   }
