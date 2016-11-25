@@ -16,10 +16,7 @@ namespace core{
 namespace{
 
 
-oat::WidgetUpdater      cv_updater;
-oat::WidgetUpdater  colsel_updater;
-oat::WidgetUpdater  ptndsp_updater;
-oat::WidgetUpdater  anidsp_updater;
+int  modified_flags;
 
 
 int  chip_width;
@@ -143,17 +140,28 @@ set_parameter(int  chip_width_, int  chip_height_, int  chip_number_)
 }
 
 
-void  set_canvas_updater(oat::WidgetUpdater  upd){cv_updater = upd;}
-void  set_colorselector_updater(oat::WidgetUpdater  upd){colsel_updater = upd;}
-void  set_patterndisplay_updater(oat::WidgetUpdater  upd){ptndsp_updater = upd;}
-void  set_animationdisplay_updater(oat::WidgetUpdater  upd){anidsp_updater = upd;}
+void
+set_modified_flag(int  flag)
+{
+  modified_flags |= flag;
+}
+
+
+int
+get_modified_flags()
+{
+  auto  t = modified_flags    ;
+            modified_flags = 0;
+
+  return t;
+}
 
 
 void
 update_because_of_image_changed()
 {
-   cv_updater();
-  ptndsp_updater();
+  modified_flags |= (        canvas_modified_flag |
+                     patterndisplay_modified_flag);
 }
 
 
@@ -187,8 +195,8 @@ change_frame_point(const oat::Point&  pt)
   frame.x = pt.x;
   frame.y = pt.y;
 
-   cv_updater();
-  ptndsp_updater();
+  modified_flags |= (        canvas_modified_flag |
+                     patterndisplay_modified_flag);
 }
 
 
@@ -203,7 +211,7 @@ change_color_index(int  v)
 {
   color_index = v;
 
-  colsel_updater();
+  modified_flags |= colorselector_modified_flag;
 }
 
 
@@ -245,8 +253,8 @@ fill_area(int  color_index_, int  x, int  y)
 
       search(color_index_,target,x,y);
 
-       cv_updater();
-      ptndsp_updater();
+      modified_flags |= (        canvas_modified_flag |
+                         patterndisplay_modified_flag);
     }
 }
 
@@ -256,8 +264,8 @@ put_pixel(int  color_index_, int  x, int  y)
 {
   pixels[frame.y+y][frame.x+(chip_width*chip_index)+x] = color_index_;
 
-   cv_updater();
-  ptndsp_updater();
+  modified_flags |= (        canvas_modified_flag |
+                     patterndisplay_modified_flag);
 }
 
 
@@ -396,8 +404,8 @@ read(const char*  path)
 
       reset_palette();
 
-       cv_updater();
-  ptndsp_updater();
+      modified_flags |= (        canvas_modified_flag |
+                         patterndisplay_modified_flag);
 	   }
 }
 

@@ -8,17 +8,20 @@
 
 
 
-namespace pattern_table{
+class
+PatternTable
+{
+public:
+  static constexpr int  size = 3;
 
+private:
+  oat::Point  data[size][size];
 
-constexpr int  size = 3;
+public:
+  void                change(int  x, int  y)      ;
+  const oat::Point&      get(int  x, int  y) const;
 
-
-void                change(int  x, int  y);
-const oat::Point&      get(int  x, int  y);
-
-
-}
+};
 
 
 

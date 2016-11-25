@@ -77,6 +77,7 @@ OAT_OBJ +=                 \
   oat_image_indexcolor.o   \
   oat_text.o               \
   oat_dial.o               \
+  oat_cross.o              \
   oat_buttonmodule.o       \
   oat_button.o             \
   oat_table.o              \

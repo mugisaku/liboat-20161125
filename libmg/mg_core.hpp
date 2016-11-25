@@ -27,12 +27,17 @@ namespace core{
 constexpr int  image_size = 384;
 
 
+constexpr int            canvas_modified_flag = 1;
+constexpr int     colorselector_modified_flag = 2;
+constexpr int    patterndisplay_modified_flag = 4;
+constexpr int  animationdisplay_modified_flag = 8;
+
+
+
 void  set_parameter(int  chip_width_, int  chip_height_, int  chip_number_);
 
-void  set_canvas_updater(oat::WidgetUpdater  upd);
-void  set_colorselector_updater(oat::WidgetUpdater  upd);
-void  set_patterndisplay_updater(oat::WidgetUpdater  upd);
-void  set_animationdisplay_updater(oat::WidgetUpdater  upd);
+void  set_modified_flag(int  flag);
+int   get_modified_flags();
 
 void  update_because_of_image_changed();
 

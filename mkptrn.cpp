@@ -3,6 +3,7 @@
 #include"libmg/mg_core.hpp"
 #include"libmg/mg_colorselector.hpp"
 #include"libmg/mg_patterndisplay.hpp"
+#include"libmg/mg_patterntable.hpp"
 #include"libmg/mg_framepositioner.hpp"
 #include"libmg/mg_canvas.hpp"
 #include"libmg/mg_widget.hpp"
@@ -102,6 +103,12 @@ process_window(const SDL_WindowEvent&  evt)
 
 
 
+Widget*  canvas;
+Widget*  colsel;
+Widget*  dsp0;
+Widget*  dsp1;
+
+
 void
 construct_widgets()
 {
@@ -119,18 +126,22 @@ construct_widgets()
 
   core::set_parameter(24,24,1);
 
-  auto      cv = new Canvas;
-  auto     dsp = new PatternDisplay;
-  auto  colsel = new ColorSelector;
+  static PatternTable  t0;
+  static PatternTable  t1;
 
-  core::set_canvas_updater(cv);
-  core::set_patterndisplay_updater(dsp);
-  core::set_colorselector_updater(colsel);
+  canvas = new Canvas;
+    dsp0 = new PatternDisplay(t0);
+    dsp1 = new PatternDisplay(t1,&t0);
+  colsel = new ColorSelector;
 
-  master.join(new TableColumn({colsel,
-                               new TableRow({cv,dsp,new FramePositioner}),
-                               new TableRow({create_tool_widget(),create_edit_widget()}),
-                               create_manager_widget()}),0,0);
+  auto  ptntbl = new TableColumn({new Text(u"テーブル0"),dsp0,
+                                  new Text(u"テーブル1"),dsp1});
+
+  master.join(new TableColumn({new TableRow({canvas,ptntbl,new FramePositioner}),
+                               new TableRow({create_tool_widget(),create_edit_widget(),
+                                             new TableColumn({colsel,create_manager_widget()}),
+                                            }),
+                              }),0,0);
 
   master.update();
 }
@@ -196,6 +207,18 @@ main_loop()
     if(mouse_input)
     {
       master.process(mouse);
+
+      auto  v = core::get_modified_flags();
+
+        if(v&core::canvas_modified_flag){canvas->need_to_redraw();}
+        if(v&core::colorselector_modified_flag){colsel->need_to_redraw();}
+
+        if(v&core::patterndisplay_modified_flag)
+        {
+          dsp0->need_to_redraw();
+          dsp1->need_to_redraw();
+        }
+
 
       mouse_input = 0;
     }

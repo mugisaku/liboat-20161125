@@ -12,6 +12,7 @@ class
 FramePositioner: public oat::Widget
 {
   oat::Point  cursor;
+  oat::Point  segment;
 
 public:
   FramePositioner();

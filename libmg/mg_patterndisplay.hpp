@@ -7,13 +7,21 @@
 
 
 
+struct PatternTable;
+
+
 class
 PatternDisplay: public oat::Widget
 {
+  const PatternTable*  bottom;
+        PatternTable&     top;
+
   oat::Point  cursor;
 
+  void  render_table(const PatternTable&  tbl);
+
 public:
-  PatternDisplay();
+  PatternDisplay(PatternTable&  top_, const PatternTable*  bottom_=nullptr);
 
   void  process_mouse(const oat::Mouse&  mouse) override;
 

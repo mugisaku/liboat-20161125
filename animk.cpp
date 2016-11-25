@@ -103,8 +103,10 @@ process_window(const SDL_WindowEvent&  evt)
 
 
 
-AnimationDisplay*
-dsp;
+Canvas*          canvas;
+ColorSelector*   colsel;
+MotionSelector*  motsel;
+AnimationDisplay*   dsp;
 
 
 void
@@ -124,18 +126,14 @@ construct_widgets()
 
   core::set_parameter(24,40,3);
 
-  auto      cv = new Canvas(true);
-           dsp = new AnimationDisplay;
-  auto  colsel = new ColorSelector;
-  auto  motsel = new MotionSelector;
+  canvas = new Canvas(true);
+     dsp = new AnimationDisplay;
+  colsel = new ColorSelector;
+  motsel = new MotionSelector;
 
   auto  anitbl = new TableColumn({motsel,dsp});
 
-  core::set_canvas_updater(cv);
-  core::set_animationdisplay_updater(dsp);
-  core::set_colorselector_updater(colsel);
-
-  master.join(new TableColumn({new TableRow({cv,anitbl,new FramePositioner}),
+  master.join(new TableColumn({new TableRow({canvas,anitbl,new FramePositioner}),
                                new TableRow({colsel,create_tool_widget(),create_edit_widget(),create_manager_widget()}),
                               }),0,0);
 
@@ -203,6 +201,13 @@ main_loop()
     if(mouse_input)
     {
       master.process(mouse);
+
+      auto  v = core::get_modified_flags();
+
+        if(v&core::canvas_modified_flag){canvas->need_to_redraw();}
+        if(v&core::colorselector_modified_flag){colsel->need_to_redraw();}
+        if(v&core::animationdisplay_modified_flag){dsp->need_to_redraw();}
+
 
       mouse_input = 0;
     }

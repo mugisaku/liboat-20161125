@@ -4,20 +4,8 @@
 
 
 
-namespace pattern_table{
-
-
-namespace{
-
-
-oat::Point
-data[size][size];
-
-
-}
-
-
 void
+PatternTable::
 change(int  x, int  y)
 {
   data[y][x].reset(core::get_frame().x,core::get_frame().y);
@@ -25,7 +13,8 @@ change(int  x, int  y)
 
 
 const oat::Point&
-get(int  x, int  y)
+PatternTable::
+get(int  x, int  y) const
 {
   return data[y][x];
 }
@@ -33,4 +22,4 @@ get(int  x, int  y)
 
 
 
-}
+

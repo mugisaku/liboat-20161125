@@ -10,6 +10,7 @@
 #include"oat_dial.hpp"
 #include"oat_table.hpp"
 #include"oat_checkform.hpp"
+#include"oat_cross.hpp"
 #include"oat_font.hpp"
 
 

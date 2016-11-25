@@ -127,29 +127,16 @@ public:
 class
 WidgetUpdater
 {
-public:
-  using Callback = void  (*)(Widget&  w);
-
-private:
-  Widget*  target;
-
-  Callback  callback;
+  std::vector<Widget*>  target_list;
 
 public:
-  WidgetUpdater(Widget*  w=nullptr, Callback  cb=nullptr):
-  target(w),
-  callback(cb){}
+  WidgetUpdater(std::initializer_list<Widget*>  ls={}):
+  target_list(ls){}
 
   void  operator()() const
   {
-      if(target)
+      for(auto  target: target_list)
       {
-          if(callback)
-          {
-            callback(*target);
-          }
-
-
         target->need_to_redraw();
       }
   }

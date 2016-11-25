@@ -12,10 +12,12 @@ constexpr int  pixel_size = 2;
 
 
 PatternDisplay::
-PatternDisplay()
+PatternDisplay(PatternTable&  top_, const PatternTable*  bottom_):
+top(top_),
+bottom(bottom_)
 {
-  change_content_width( core::get_chip_width() *pixel_size*pattern_table::size);
-  change_content_height(core::get_chip_height()*pixel_size*pattern_table::size);
+  change_content_width( core::get_chip_width() *pixel_size*PatternTable::size);
+  change_content_height(core::get_chip_height()*pixel_size*PatternTable::size);
 
   style.background_color = oat::const_color::blue;
 }
@@ -37,28 +39,28 @@ process_mouse(const oat::Mouse&  mouse)
 
     if(mouse.left.test_pressing())
     {
-      pattern_table::change(cursor.x,cursor.y);
+      top.change(cursor.x,cursor.y);
+
+      core::set_modified_flag(core::patterndisplay_modified_flag);
     }
 
 
   cursor.x *= w;
   cursor.y *= h;
-
-  need_to_redraw();
 }
+
+
 
 
 void
 PatternDisplay::
-render()
+render_table(const PatternTable&  tbl)
 {
-  fill();
-
   auto  pt = content.point;
 
-    for(int  y = 0;  y < pattern_table::size;  y += 1){
-    for(int  x = 0;  x < pattern_table::size;  x += 1){
-      auto&  ptnpt = pattern_table::get(x,y);
+    for(int  y = 0;  y < PatternTable::size;  y += 1){
+    for(int  x = 0;  x < PatternTable::size;  x += 1){
+      auto&  ptnpt = tbl.get(x,y);
 
         for(int  yy = 0;  yy < core::get_chip_height();  yy += 1){
         for(int  xx = 0;  xx < core::get_chip_width() ;  xx += 1){
@@ -71,7 +73,25 @@ render()
             }
         }}
     }}
+}
 
+
+void
+PatternDisplay::
+render()
+{
+  fill();
+
+    if(bottom)
+    {
+      render_table(*bottom);
+    }
+
+
+  render_table(top);
+
+
+  auto  pt = content.point;
 
   draw_rect(oat::const_color::white,pt.x+cursor.x,
                                     pt.y+cursor.y,
